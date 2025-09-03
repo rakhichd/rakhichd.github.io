@@ -8,19 +8,19 @@ function App() {
   return (
     <Router>
       <nav className="toolbar">
-        <Link to="/" className="logo">
+        <Link to="/" className="logo" style={{ textDecoration: "none", color: "white" }}>
           rakhi chadalavada
         </Link>
         <div className="nav-links">
           <Link to="/">home</Link>
-          <Link to="/about">about</Link>
+          {/* <Link to="/about">about</Link> */}
           <Link to="/project0">project 0</Link>
         </div>
       </nav>
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
+        {/* <Route path="/about" element={<About />} /> */}
         <Route path="/project0" element={<Project0 />} />
       </Routes>
     </Router>
