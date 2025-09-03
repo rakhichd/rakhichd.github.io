@@ -2,6 +2,7 @@ export default function Project0() {
     const sections = [
       {
         title: "part one",
+        subtitle: "selfie: the wrong way vs. the right way",
         images: [
           { src: "/images/proj0/p1_close.jpeg", caption: "close up" },
           { src: "/images/proj0/p1_zoom.jpeg", caption: "zoomed in" },
@@ -9,6 +10,7 @@ export default function Project0() {
       },
       {
         title: "part two",
+        subtitle: "architectural perspective compression",
         images: [
           { src: "/images/proj0/p2_close.jpeg", caption: "close up" },
           { src: "/images/proj0/p2_zoom.jpeg", caption: "zoomed in" },
@@ -16,6 +18,7 @@ export default function Project0() {
       },
       {
         title: "part three",
+        subtitle: "the dolly zoom",
         images: [
           { src: "/images/proj0/dollyzoom.gif", caption: "the dolly zoom" },
         ],
@@ -23,7 +26,8 @@ export default function Project0() {
     ];
   
     return (
-      <div
+      <div 
+        className="background-pattern"
         style={{
           display: "flex",
           flexDirection: "column",
@@ -39,6 +43,7 @@ export default function Project0() {
             <h2 style={{ color: "#333", fontSize: "2rem", marginBottom: "1rem", textAlign: "center" }}>
               {section.title}
             </h2>
+            <h3 style={{textAlign: "center" }}>{section.subtitle}</h3>
   
             <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", justifyContent: "center" }}>
               {section.images.map((img, i) => (

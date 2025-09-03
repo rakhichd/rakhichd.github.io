@@ -119,3 +119,15 @@
 .project-link:hover {
   color: #FF6F91;
 }
+
+.background-pattern {
+  background: radial-gradient(#d7bff3 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: moveBackground 10s linear infinite;
+  min-height: 100vh;
+}
+
+@keyframes moveBackground {
+  0% { background-position: 0 0; }
+  100% { background-position: 100px 100px; }
+}

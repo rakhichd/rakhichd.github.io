@@ -4,8 +4,8 @@ import ProjectCard from "../components/ProjectCard";
 export default function Home() {
   const projects = [
     {
-      title: "Project 0",
-      image: "/images/proj0/p1_close.jpeg",
+      title: "project 0",
+      image: "/images/proj0/p2_close.jpeg",
       description: "Becoming Friends with Your Camera",
       link: "/project0",
     },

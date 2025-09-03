@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 
 export default function ProjectCard({ title, image, description, link }) {
   return (
@@ -7,9 +9,9 @@ export default function ProjectCard({ title, image, description, link }) {
       <h3 className="project-title">{title}</h3>
       <p className="project-description">{description}</p>
       {link && (
-        <a href={link} target="_blank" rel="noopener noreferrer" className="project-link">
-          View Project
-        </a>
+        <Link to={link} className="project-link">
+          view project
+        </Link>
       )}
     </div>
   );
