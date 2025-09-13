@@ -199,8 +199,12 @@ export default function Project1() {
       </pre>
 
       <p>
-        The displacement that produced the maximum NCC score was optimal.
-        While this approach worked well for the smaller, low-resolution images, jpg,
+        The displacement that produced the maximum NCC score was optimal. While Euclidean Distance 
+        is also a metric that could have been used, it is not as effective as NCC. This is because 
+        using the euclidean distance causes variations in brightness or contrasts to have 
+        greater weights, meaning it is more sensitive to them. NCC is able to normalize those
+        values instead, as seen by its formula, making it more reliable to use. 
+        While this single scale worked well for the smaller, low-resolution images, jpg,
         its limited search range and high computational cost made it more impractical
         for the high-resolution glass plate scans, where displacements were
         often much larger.
