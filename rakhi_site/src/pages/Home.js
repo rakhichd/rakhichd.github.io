@@ -9,6 +9,12 @@ export default function Home() {
       description: "Becoming Friends with Your Camera",
       link: "/project0",
     },
+    {
+      title: "project 1",
+      image: "/images/proj1/a_sboku.jpg",
+      description: "Images of the Russian Empire",
+      link: "/project1",
+    },
   ];
 
   return (
