@@ -60,7 +60,7 @@ def conv_forloop_2(img_arr, filter_arr):
           title: "1.3 Derivative of Gaussian (DoG) Filter",
           paragraph: `In the previous part, the binary edge image is still a little noisy. The noise can be reduced by using a gaussian filter to filter out the noise. This blurs the image. Then after that convolution, we are able to repeat the same steps are before to get the following image.`,
           paragraph1: `We can simplify the above process by doing it in fewer steps as well. The Derivative of Gaussian (DoG) filter is the convolution of a Gaussian filter with a finite difference operator. We can directly apply this onto the original cameraman image, without having to blur the image initially. Instead the DoG filter handles this smoothing step. 
-We see that this resulting image is similar and also less noisy than the previous images using the finite difference method. `,
+We see that this resulting image is similar and also less noisy than the previous images using the finite difference method. I used a threshold of 0.07 here.`,
           gallery: [
             { src: "/images/proj2/guass.jpeg", caption: "Gaussian Filter" },
             { src: "/images/proj2/smooth.jpeg", caption: "Smoothed Image" },
@@ -98,14 +98,14 @@ The way this process works is by first using a blur filter, which is where the h
             { src: "/images/proj2/nycHigh.jpeg", caption: "High Frequencies" },
             { src: "/images/proj2/nycSharp.jpeg", caption: "Sharp" },
             { src: "/images/proj2/nyc2Og.jpeg", caption: "Original Image" },
-            { src: "/images/proj2/nyc2Sharp.jpeg", caption: "Sharp Image" },
+            { src: "/images/proj2/nyc2Sharp.jpeg", caption: "Sharp Image, alpha = " },
           ],
         },
         {
           title: "2.2 Hybrid Images",
           paragraph: "Hybrid images combine low frequencies of one image with high frequencies of another.",
           gallery: [
-            { src: "/images/proj2/derekPicture.jpg", caption: "Derek" },
+            { src: "/images/proj2/DerekPicture.jpg", caption: "Derek" },
             { src: "/images/proj2/nutmeg.jpg", caption: "Nutmeg" },
             { src: "/images/proj2/derek_cat.jpeg", caption: "Hybrid Result" },
             { src: "/images/proj2/shweta.jpeg", caption: "Shweta" },
@@ -126,12 +126,11 @@ The way this process works is by first using a blur filter, which is where the h
         {
           title: "2.3 Gaussian and Laplacian Stacks",
           gallery: [
-            { src: "/images/proj2/taj.jpeg", caption: "Original Taj" },
-            { src: "/images/proj2/tajBlur.jpeg", caption: "Blurred Taj" },
-            { src: "/images/proj2/tajHigh.jpeg", caption: "High Frequencies" },
-            { src: "/images/proj2/taj15.jpeg", caption: "Sharp alpha=1.5" },
-            { src: "/images/proj2/taj3.jpeg", caption: "Sharp alpha=3" },
-            { src: "/images/proj2/taj5.jpeg", caption: "Sharp alpha=5" },
+            { src: "/images/proj2/hybrid_blend.png", standalone: true },
+            { src: "/images/proj2/bb.jpeg", standalone: true },
+            { src: "/images/proj2/a1.jpeg", caption: "Laplacian of Apple Sum"},
+            { src: "/images/proj2/o1.jpeg", caption: "Laplacian of Orange Sum"},
+            { src: "/images/proj2/oa1.jpeg", caption: "Laplacian of Blend Sum"},
           ],
         },
         {
@@ -152,6 +151,10 @@ The way this process works is by first using a blur filter, which is where the h
             { src: "/images/proj2/mt.jpeg", caption: "Mountain" },
             { src: "/images/proj2/oceanMask.jpeg", caption: "Mask" },
           ],
+        },
+        {
+          title: "Conclusion",
+          paragraph: "The most important thing i learned from this project was the idea about how adjusting different frequency components, we can enhance details and create smoother images. I enjoyed creating hybrid and smoothly transitioning images in this project as well."
         },
       ],
     },
