@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <script>
-      // Redirect all unknown routes to index.html
-      var redirectTo = window.location.protocol + "//" + window.location.host + window.location.pathname.replace(/\/404\.html$/, "/") + window.location.search + window.location.hash;
-      window.location.replace(redirectTo);
+      // Redirect all 404s to index.html
+      var path = window.location.pathname;
+      window.location.replace(window.location.origin + '/?path=' + path);
     </script>
   </head>
   <body></body>
