@@ -15,6 +15,12 @@ export default function Home() {
       description: "Images of the Russian Empire",
       link: "/project1",
     },
+    {
+      title: "project 2",
+      image: "/images/proj2/self.jpg",
+      description: "Fun with Filters and Frequencies",
+      link: "/project2",
+    },
   ];
 
   return (
