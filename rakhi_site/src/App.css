@@ -131,3 +131,36 @@
   0% { background-position: 0 0; }
   100% { background-position: 100px 100px; }
 }
+
+.skill-pill {
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.skill-pill:hover {
+  transform: scale(1.1);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 2rem;
+}
+
+.social-icon {
+  color: inherit; /* Keeps the original color */
+  transition: transform 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.social-icon:hover {
+  transform: scale(1.2);
+  color: #1da1f2; /* Optional: change color on hover */
+}

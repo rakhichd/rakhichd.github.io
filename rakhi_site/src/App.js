@@ -8,7 +8,7 @@ import Project2 from './pages/Project2';
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <nav className="toolbar">
         <Link to="/" className="logo" style={{ textDecoration: "none", color: "white" }}>
           rakhi chadalavada
