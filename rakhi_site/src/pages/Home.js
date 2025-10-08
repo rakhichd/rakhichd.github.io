@@ -22,6 +22,12 @@ export default function Home() {
       description: "Fun with Filters and Frequencies",
       link: "/project2",
     },
+    {
+      title: "Project 3",
+      image: "/images/proj3/finalKitchen.jpeg",
+      description: "Stitching Photo Mosaics",
+      link: "/project3",
+    },
   ];
 
   const skills = [
