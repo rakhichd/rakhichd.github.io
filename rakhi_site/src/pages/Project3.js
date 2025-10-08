@@ -19,19 +19,23 @@ export default function Project3() {
           title: "A.2: Recover Homographies",
           paragraph: `Before I could warp my images into alignment, I first needed to recover the parameters of the transformation between each pair of images. Here the transformation is a homography: p’=Hp, where H is a 3x3 matrix with 8 degrees of freedom (lower right corner is a scaling factor and is set to 1). I recovered the homography via a set of (p’,p) pairs of corresponding points taken from the two images.`,
           gallery: [
+            { src: "/images/proj3/hp.jpeg", caption: "step 1 - we represent the projective transformation between each left and right image using a homography matrix, H. " },
+            { src: "/images/proj3/trans.jpeg", caption: "step 2 - given the correspondences, the projective transformation between two images" },
+            { src: "/images/proj3/recover.jpeg", caption: "step 3 - recover the homography by solving the following system using least squares. we have 8 degrees of freedom, so at least 4 points are needed" },
             { src: "/images/proj3/cor1.jpeg", caption: "Correspondences between pair of Doe Library Images" },
             { src: "/images/proj3/cor2.jpeg", caption: "Correspondences between pair of MLK Images" },
+
           ],
         },
         {
           title: "A.3: Warp the Images",
           paragraph: `Knowing the parameters of the homography, we can use the homography to warp each image towards a reference image. Inverse warping was also used in order to avoid holes in the output image. Two different interpolation methods were used here.`,
-          paragraph1: `The first was Nearest Neighbor Interpolation where coordinates were rounded to their nearest pixel value.`,
-          paragraph2: `The next method was Bilinear Interpolation where the weighted average of the four neighboring pixels were used to compute.`,
+          paragraph1: `The first was Nearest Neighbor Interpolation where coordinates were rounded to their nearest pixel value. I observed that this method tended to be faster in comparison and simpler to implement, however the overall image quality seemed to be slightly less. In this case however where my pictures weren't as high in quality, I would prefer to use this method given its speed.`,
+          paragraph2: `The next method was Bilinear Interpolation where the weighted average of the four neighboring pixels were used to compute. I observed that this method provided images that were a little smoother and of higher quality, yet the time taken to compute was much longer in comparison.`,
           gallery: [
             { src: "/images/proj3/window.jpeg", caption: "Original Window Image" },
-            { src: "/images/proj3/windowNN.jpeg", caption: "Window via Nearest Neighbor Interpolation" },
-            { src: "/images/proj3/windowBi.jpeg", caption: "Window via Bilinear Interpolation" },
+            { src: "/images/proj3/windowNN.jpeg", caption: "Window via Bilinear Interpolation" },
+            { src: "/images/proj3/windowBi.jpeg", caption: "Window via Nearest Neighbor Interpolation" },
             { src: "/images/proj3/swim.jpeg", caption: "Original Poster Image", group: "swim" },
             { src: "/images/proj3/swimNN.jpeg", caption: "Poster via Nearest Neighbor Interpolation", group: "swim" },
             { src: "/images/proj3/swimBi.jpeg", caption: "Poster via Bilinear Interpolation", group: "swim" },
@@ -40,7 +44,7 @@ export default function Project3() {
         {
           title: "A.4: Blend the Images into a Mosaic",
           paragraph: `Here, images were warped so they could create an image mosaic. Instead of having one picture overwrite the other, which would lead to strong edge artifacts, weighted averaging was used.`,
-          paragraph1: `I warped all images into a new projection, and did this in one shot. I first determined the size of the final mosaic and then warped all my images into that size by computing the final image size. This way I had a stack of images together defining the mosaic. Next, to blend them together to produce a single image, I made sure to use weighted averaging and blending to reduce edge artifacts. This way the mask would not be visible after the images were blended together.`,
+          paragraph1: `I warped all images into a new projection, and did this in one shot. I first determined the size of the final mosaic by using the dimensions of my two images, based on which image i was computing homographies on. Then I warped all my images into that size by computing the final image size. This way I had a stack of images together defining the mosaic. Next, to blend them together to produce a single image, I made sure to use weighted averaging and blending to reduce edge artifacts. This way the mask would not be visible after the images were blended together. I used bilinear interpolation for my warping here.`,
           gallery: [
             { src: "/images/proj3/room1.jpeg", caption: "Original Room Image 1", standalone: true },
             { src: "/images/proj3/room2.jpeg", caption: "Original Room Image 2", standalone: true },
