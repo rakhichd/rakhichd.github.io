@@ -43,7 +43,7 @@ export default function Project3() {
         },
         {
           title: "A.4: Blend the Images into a Mosaic",
-          paragraph: `Here, images were warped so they could create an image mosaic. Instead of having one picture overwrite the other, which would lead to strong edge artifacts, weighted averaging was used.`,
+          paragraph: `Here, images were warped so they could create an image mosaic. Instead of having one picture overwrite the other, which would lead to strong edge artifacts, weighted averaging was used. After taking pictures of my original images, I resized all of them to have dimensions of approximately ~1000 pixels.`,
           paragraph1: `I warped all images into a new projection, and did this in one shot. I first determined the size of the final mosaic by using the dimensions of my two images, based on which image i was computing homographies on. Then I warped all my images into that size by computing the final image size. This way I had a stack of images together defining the mosaic. Next, to blend them together to produce a single image, I made sure to use weighted averaging and blending to reduce edge artifacts. This way the mask would not be visible after the images were blended together. I used bilinear interpolation for my warping here.`,
           gallery: [
             { src: "/images/proj3/room1.jpeg", caption: "Original Room Image 1", standalone: true },
