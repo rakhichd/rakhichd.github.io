@@ -77,6 +77,63 @@ export default function Project3() {
         },
       ],
     },
+    {
+      title: "Feature Matching for Autostitching",
+      text: [
+               {
+          title: "B.1: Harris Corner Detection",
+          paragraph: `To begin the automatic stitching process, the algorithm first identifies key feature points within each image, which are locations that stand out due to strong variations in intensity. These points, called corners, are detected using the Harris corner detector, which highlights regions where the image gradient changes sharply in multiple directions. `,
+          paragraph1: `As shown, the Harris detector identifies an extremely large number of corners . However, for image alignment, having so many points is not needed and instead will simply slow down computation. Thus, to make the process more efficient, limiting the feature set by selecting only the top N points with the highest corner response values was a better method. These represent the strongest and most distinctive features in the image.`,
+          gallery: [
+            { src: "/images/proj3/philz.jpeg", caption: "Philz Original Image"},
+            { src: "/images/proj3/harris1.jpeg", caption: "Harris Corners (No ANMS)"},
+            { src: "/images/proj3/harris2.jpeg", caption: "ANMS (Top 500)"},
+            { src: "/images/proj3/harris3.jpeg", caption: "ANMS (Top 250)" },
+          ],
+        },
+        {
+          title: "B.2: Feature Descriptor Extraction",
+          paragraph: `Although we can now detect prominent and well-distributed points in an image, these points alone aren’t enough to establish correspondences between two images. There’s no guarantee that a corner detected in one image will appear in the same location in another. To overcome this, we create feature descriptors which are compact representations of the local image structure around each corner.`,
+          paragraph1: `A feature descriptor is constructed by taking a larger patch (e.g., 40×40 pixels) around a corner, applying a slight blur to reduce sensitivity to exact pixel locations, and then downsampling it to a smaller 8×8 patch. This patch is then normalized to have zero mean and unit variance, which helps make the descriptor robust to changes in lighting. These normalized, low-resolution patches capture the essential local patterns around each corner, allowing us to match corners across images reliably.`,
+          gallery: [
+            { src: "/images/proj3/ftD.jpeg", caption: "Feature Descriptor Extraction"},
+          ],
+        },
+        {
+          title: "B.3: Feature Matching",
+          paragraph: `With feature descriptors extracted for each corner in both images, the next step is to find matching points between the images. A simple, “naive” approach is to compare every descriptor in the first image with every descriptor in the second image by computing the Euclidean (L2) distance. Each descriptor in the first image is then paired with the descriptor in the second image that has the smallest distance. While this approach can find some correct matches, it often produces many outliers, descriptors that don’t truly correspond but happen to have a low distance.`,
+          paragraph1: `To reduce these mismatches, we can use Lowe’s ratio test. For each descriptor, we compute both the smallest and second-smallest L2 distances to descriptors in the other image. The ratio of the smallest distance to the second-smallest distance indicates match quality: a small ratio means the best match is significantly better than the next best, suggesting a reliable correspondence. By keeping only matches with ratios below a threshold (~0.7), most outliers are eliminated.`,
+          paragraph2: `For example, using a threshold of 0.7 tends to retain many correct matches while removing the majority of false matches. After applying this filtering, we can visualize the correspondences between images. Some mismatches may remain, but they won’t negatively affect final image alignment because the RANSAC algorithm (next past) can compute the homography using only the inliers well.`,
+          gallery: [
+            { src: "/images/proj3/matches_campus.jpeg", caption: "Matches Between Images"},
+            { src: "/images/proj3/matches_cheese.jpeg", caption: "Matches Between Images"},
+          ],
+        },
+        {
+          title: "B.4: RANSAC for Robust Homography",
+          paragraph: `With the correspondences established, the final step is to compute a homography that maps the matched points from one image to the other. However, as mentioned earlier, some matches may still be outliers. To filter these and retain only reliable correspondences, the RANSAC algorithm was used. `,
+          paragraph1: `For my automatic stitching, I set the inlier threshold ε\varepsilonε to 10.0. This provides a small margin for error while preventing mismatched points from being included as inliers. After running RANSAC for 5000 iterations, a homography matrix was created. To generate the mosaics, existing image warping and stitching code was reused.`,
+          paragraph2: `Comparing the results with the manually stitched images from Part A, the autostitched mosaics are largely similar, but with noticeable improvements in sharpness and reduction of ghosting. These results highlight the effectiveness of RANSAC in handling outliers. Another advantage of autostitching is its ability to better maintain scale and proportions during warping. Overall, RANSAC proves to be a powerful tool for creating precise, high-quality mosaics from multiple images.`,
+          gallery: [
+            { src: "/images/proj3/c1.jpeg", caption: "Original Image 1"},
+            { src: "/images/proj3/c2.jpeg", caption: "Original Image 2"},
+            { src: "/images/proj3/c_m.jpeg", caption: "Manual Stitching"},
+            { src: "/images/proj3/c.jpeg", caption: "Automatic Stitching"},
+            { src: "/images/proj3/conte1.jpeg", caption: "Original Image 1"},
+            { src: "/images/proj3/conte2.jpeg", caption: "Original Image 2"},
+            { src: "/images/proj3/conte_m.jpeg", caption: "Manual Stitching"},
+            { src: "/images/proj3/conte.jpeg", caption: "Automatic Stitching"},
+            { src: "/images/proj3/ny1.jpg", caption: "Original Image 1"},
+            { src: "/images/proj3/ny3.jpg", caption: "Original Image 2"},
+            { src: "/images/proj3/finalNyc.jpeg", caption: "Manual Stitching"},
+            { src: "/images/proj3/nyc.jpeg", caption: "Automatic Stitching"},
+            { src: "/images/proj3/cheese1.jpeg", caption: "Original Image 1"},
+            { src: "/images/proj3/cheese2.jpeg", caption: "Original Image 2"},
+            { src: "/images/proj3/cheese.jpeg", caption: "Automatic Stitching"},
+          ],
+        },
+      ]
+    }
   ];
 
   return (
@@ -165,71 +222,83 @@ export default function Project3() {
       </div>
 
       {sections.map((section, sIdx) => (
-        <div key={sIdx} style={{ 
-          maxWidth: "1400px", 
-          margin: "0 auto", 
-          padding: "4rem 2rem",
+  <div key={sIdx} style={{ 
+    maxWidth: "1400px", 
+    margin: "0 auto", 
+    padding: "4rem 2rem",
+    position: "relative",
+    zIndex: 1
+  }}>
+    {/* Render the main section title */}
+    {section.title && (
+      <h1 style={{
+        fontSize: "2rem",
+        fontWeight: 800,
+        textAlign: "center",
+        marginBottom: "3rem"
+      }}>
+        {section.title}
+      </h1>
+    )}
+
+    {section.text.map((txt, tIdx) => (
+      <div
+        key={tIdx}
+        style={{
+          background: "rgba(255, 255, 255, 0.9)",
+          backdropFilter: "blur(40px)",
+          padding: "4rem",
+          borderRadius: "32px",
+          border: "1px solid rgba(0, 0, 0, 0.06)",
+          boxShadow: "0 25px 80px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+          marginBottom: "4rem",
           position: "relative",
-          zIndex: 1
-        }}>
-          {section.text.map((txt, tIdx) => (
-            <div
-              key={tIdx}
-              style={{
-                background: "rgba(255, 255, 255, 0.9)",
-                backdropFilter: "blur(40px)",
-                padding: "4rem",
-                borderRadius: "32px",
-                border: "1px solid rgba(0, 0, 0, 0.06)",
-                boxShadow: "0 25px 80px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
-                marginBottom: "4rem",
-                position: "relative",
-                overflow: "hidden"
-              }}
-            >
-              {/* Subtle corner accent */}
+          overflow: "hidden"
+        }}
+      >
+        {/* Subtle corner accent */}
+        <div style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          width: "300px",
+          height: "300px",
+          background: "radial-gradient(circle at 100% 0%, rgba(31, 31, 46, 0.03) 0%, transparent 70%)",
+          pointerEvents: "none"
+        }} />
+        
+        {txt.title && (
+          <div style={{ marginBottom: "3rem", position: "relative" }}>
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "1rem",
+              background: "linear-gradient(135deg, #1f1f2e 0%, #2d3748 100%)",
+              padding: "0.8rem 2rem",
+              borderRadius: "16px",
+              border: "1px solid rgba(0, 0, 0, 0.1)",
+              boxShadow: "0 10px 40px rgba(31, 31, 46, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1)"
+            }}>
               <div style={{
-                position: "absolute",
-                top: 0,
-                right: 0,
-                width: "300px",
-                height: "300px",
-                background: "radial-gradient(circle at 100% 0%, rgba(31, 31, 46, 0.03) 0%, transparent 70%)",
-                pointerEvents: "none"
+                width: "8px",
+                height: "8px",
+                background: "linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%)",
+                borderRadius: "50%",
+                boxShadow: "0 0 20px rgba(255, 255, 255, 0.5)"
               }} />
-              
-              {txt.title && (
-                <div style={{ marginBottom: "3rem", position: "relative" }}>
-                  <div style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "1rem",
-                    background: "linear-gradient(135deg, #1f1f2e 0%, #2d3748 100%)",
-                    padding: "0.8rem 2rem",
-                    borderRadius: "16px",
-                    border: "1px solid rgba(0, 0, 0, 0.1)",
-                    boxShadow: "0 10px 40px rgba(31, 31, 46, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1)"
-                  }}>
-                    <div style={{
-                      width: "8px",
-                      height: "8px",
-                      background: "linear-gradient(135deg, #ffffff 0%, #e5e7eb 100%)",
-                      borderRadius: "50%",
-                      boxShadow: "0 0 20px rgba(255, 255, 255, 0.5)"
-                    }} />
-                    <h2 style={{ 
-                      fontSize: "1.2rem", 
-                      fontWeight: 700, 
-                      color: "#ffffff",
-                      margin: 0,
-                      letterSpacing: "0.08em",
-                      textTransform: "uppercase"
-                    }}>
-                      {txt.title}
-                    </h2>
-                  </div>
-                </div>
-              )}
+              <h2 style={{ 
+                fontSize: "1.2rem", 
+                fontWeight: 700, 
+                color: "#ffffff",
+                margin: 0,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase"
+              }}>
+                {txt.title}
+              </h2>
+            </div>
+          </div>
+        )}
 
               <div style={{ position: "relative", zIndex: 1 }}>
                 {[txt.paragraph, txt.paragraph1, txt.paragraph2]
@@ -310,8 +379,6 @@ export default function Project3() {
                     {txt.gallery.map((img, i) => (
                       <div 
                         key={i}
-                        onMouseEnter={() => setHoveredImg(`${tIdx}-${i}`)}
-                        onMouseLeave={() => setHoveredImg(null)}
                         style={{ 
                           gridColumn: img.standalone ? "1 / -1" : undefined,
                           position: "relative",
@@ -324,7 +391,6 @@ export default function Project3() {
                             : "0 20px 60px rgba(0,0,0,0.08)",
                           transform: hoveredImg === `${tIdx}-${i}` ? "translateY(-12px) scale(1.02)" : "translateY(0) scale(1)",
                           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-                          cursor: "pointer"
                         }}
                       >
                         {/* Subtle glow effect on hover */}
