@@ -39,8 +39,8 @@ export default function Project4() {
           paragraph:
             "After calibrating the camera, I estimated the pose (position and orientation) for every image using an ArUco tag as a marker. Because the tag’s physical size is known, it provides fixed 3D corner points visible in all views. For each frame, I detected the four tag corners in pixel coordinates and paired them with the tag’s 3D corner coordinates in real‑world units, then solved the Perspective‑n‑Point (PnP) problem with OpenCV’s solvePnP to recover the pose, giving us a rotation vector (orientation) and a translation vector (position). OpenCV returns world‑to‑camera transforms, so I inverted each to obtain camera‑to‑world matrices used later for NeRF rendering. To keep the pipeline robust, I skipped frames where the ArUco tag was not detected. Finally, I visualized the estimated poses as 3D camera frustums in viser to confirm they formed a consistent trajectory around the object.",
           gallery: [
-            { src: "/images/proj4/v1.png", caption: "Pose 1" },
-            { src: "/images/proj4/v2.png", caption: "Pose 2" },
+            { src: "/images/proj4/42.png", caption: "Pose 1" },
+            { src: "/images/proj4/43.png", caption: "Pose 2" },
           ],
         },
         {
@@ -120,11 +120,19 @@ export default function Project4() {
         {
           title: "Part 2.6: Training with your own data",
           paragraph: "I played around with the values a lot and had to take images from different angles to get a good view of the object. In the end, I was able to get some views of the obejcts. i think with more iterations, I could have gotten a better view of the object, but this is what it looks like after 3000 iterations and a batch size of 10000. I used near and far values of 0.1 and 0.55 as well.",
+          paragraph1: "My inital captured images did well and looked good when comparing ground truth to the final iteration, however in the gif, it did not render as well. I also faced difficulties—especially repeatedly running out of GPUs to compute—which interrupted longer runs and limited iteration counts.",
           gallery: [
-            { src: "/images/proj4/lossGraph.png", caption: "Loss Graph", standalone: true },
+            { src: "/images/proj4/lossgraph.png", caption: "Loss Graph", standalone: true },
             { src: "/images/proj4/bear3.png", standalone: true },
-            { src: "/images/proj4/bear7.gif" },
-            { src: "/images/proj4/bear8.gif"},
+            { src: "/images/proj4/z1.gif", caption: "Reload page to view again"},
+            { src: "/images/proj4/bear7.mp4", caption: "Bear Gif, you can see the bear in the center"},
+            { src: "/images/proj4/a1.mp4"},
+            { src: "/images/proj4/download.gif", caption: "lafufu gif, reload page to view again - created with very few iterations"},
+            { src: "/images/proj4/67.jpeg", caption: "I then lay the code on the object like this to see how it looks"},
+            { src: "/images/proj4/e1.gif", caption: "one view of the result"},
+            { src: "/images/proj4/e2.gif", caption: "second view "},
+            { src: "/images/proj4/100.gif"},
+            { src: "/images/proj4/freak.gif"},
           ],
         },
         {
@@ -318,6 +326,9 @@ export default function Project4() {
                   >
                     {txt.gallery.map((imgObj, i) => {
                       const key = `${sIdx}-${tIdx}-${i}`;
+                      const isVideo =
+                        !!(imgObj && imgObj.src) &&
+                        /\.(mp4|webm|ogg)$/i.test(imgObj.src);
 
                       if (imgObj.standalone) {
                         return (
@@ -334,17 +345,34 @@ export default function Project4() {
                                 "0 30px 90px rgba(2,6,23,0.12), 0 2px 8px rgba(2,6,23,0.04)",
                             }}
                           >
-                            <img
-                              src={imgObj.src}
-                              alt={imgObj.caption || "figure"}
-                              style={{
-                                width: "100%",
-                                height: "auto",
-                                maxHeight: "720px",
-                                objectFit: "contain",
-                                display: "block",
-                              }}
-                            />
+                            {isVideo ? (
+                              <video
+                                src={imgObj.src}
+                                style={{
+                                  width: "100%",
+                                  height: "auto",
+                                  maxHeight: "720px",
+                                  objectFit: "contain",
+                                  display: "block",
+                                }}
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                              />
+                            ) : (
+                              <img
+                                src={imgObj.src}
+                                alt={imgObj.caption || "figure"}
+                                style={{
+                                  width: "100%",
+                                  height: "auto",
+                                  maxHeight: "720px",
+                                  objectFit: "contain",
+                                  display: "block",
+                                }}
+                              />
+                            )}
                             {imgObj.caption && (
                               <div
                                 style={{
@@ -385,22 +413,44 @@ export default function Project4() {
                                 : "0 20px 60px rgba(2,6,23,0.08), 0 1px 4px rgba(2,6,23,0.04)",
                           }}
                         >
-                          <img
-                            src={imgObj.src}
-                            alt={imgObj.caption || "image"}
-                            style={{
-                              width: "100%",
-                              height: "auto",
-                              maxHeight: "460px",
-                              objectFit: "contain",
-                              display: "block",
-                              filter:
-                                hoveredKey === key
-                                  ? "brightness(1.06)"
-                                  : "brightness(1)",
-                              transition: "filter 280ms ease",
-                            }}
-                          />
+                          {isVideo ? (
+                            <video
+                              src={imgObj.src}
+                              style={{
+                                width: "100%",
+                                height: "auto",
+                                maxHeight: "460px",
+                                objectFit: "contain",
+                                display: "block",
+                                filter:
+                                  hoveredKey === key
+                                    ? "brightness(1.06)"
+                                    : "brightness(1)",
+                                transition: "filter 280ms ease",
+                              }}
+                              autoPlay
+                              loop
+                              muted
+                              playsInline
+                            />
+                          ) : (
+                            <img
+                              src={imgObj.src}
+                              alt={imgObj.caption || "image"}
+                              style={{
+                                width: "100%",
+                                height: "auto",
+                                maxHeight: "460px",
+                                objectFit: "contain",
+                                display: "block",
+                                filter:
+                                  hoveredKey === key
+                                    ? "brightness(1.06)"
+                                    : "brightness(1)",
+                                transition: "filter 280ms ease",
+                              }}
+                            />
+                          )}
                           <div
                             style={{
                               position: "absolute",

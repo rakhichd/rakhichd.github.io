@@ -31,7 +31,7 @@ export default function Home() {
     {
       title: "Project 4",
       image: "/images/proj4/renderLego1.png",
-      description: "Stitching Photo Mosaics",
+      description: "Neural Radiance Field",
       link: "/project4",
     },
   ];
