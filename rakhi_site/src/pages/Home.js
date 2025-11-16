@@ -28,6 +28,12 @@ export default function Home() {
       description: "Stitching Photo Mosaics",
       link: "/project3",
     },
+    {
+      title: "Project 4",
+      image: "/images/proj4/renderLego1.png",
+      description: "Stitching Photo Mosaics",
+      link: "/project4",
+    },
   ];
 
   const skills = [
