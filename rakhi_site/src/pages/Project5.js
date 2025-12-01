@@ -7,8 +7,23 @@ export default function Project5() {
 
     const hero = {
         title: "Fun With Diffusion Models",
-        subtitle:
-            "Exploring how denoising diffusion probabilistic models synthesize and edit images, step-by-step.",
+    };
+
+    const renderBouncyTitle = (text) => {
+        return text.split("").map((ch, idx) => (
+            <span
+                key={`${ch}-${idx}`}
+                style={{
+                    display: "inline-block",
+                    animation: "bounceTitle 1.8s ease-in-out infinite",
+                    animationDelay: `${idx * 0.05}s`,
+                    transformOrigin: "bottom",
+                    willChange: "transform",
+                }}
+            >
+                {ch}
+            </span>
+        ));
     };
 
     const sections = [
@@ -108,7 +123,7 @@ export default function Project5() {
                     gallery: [
                         { src: "/images/proj5/c250.png", caption: "Noisy Campanile, 250 steps" },
                         { src: "/images/proj5/c500.png", caption: "Noisy Campanile, 500 steps" },
-                        { src: "/images/proj5/c750.png", caption: "Noisy Campanile, 750 steps" },
+                        { src: "/images/proj5/c750.png", caption: "Noisy Campanile, 750 steps",breakAfter: true },
                         { src: "/images/proj5/g1.png", caption: "Gaussian-Denoised Campanile, 250 steps" },
                         { src: "/images/proj5/g2.png", caption: "Gaussian-Denoised Campanile, 500 steps" },
                         { src: "/images/proj5/g3.png", caption: "Gaussian-Denoised Campanile, 750 steps" },
@@ -120,7 +135,7 @@ export default function Project5() {
                     gallery: [
                         { src: "/images/proj5/c250.png", caption: "Noisy Campanile,250 steps" },
                         { src: "/images/proj5/c500.png", caption: "Noisy Campanile, 500 steps" },
-                        { src: "/images/proj5/c750.png", caption: "Noisy Campanile, 750 steps" },
+                        { src: "/images/proj5/c750.png", caption: "Noisy Campanile, 750 steps", breakAfter: true },
                         { src: "/images/proj5/test3.png", caption: "One-Step Denoised Campanile, 250 steps" },
                         { src: "/images/proj5/test6.png", caption: "One-Step Denoised Campanile, 500 steps" },
                         { src: "/images/proj5/test9.png", caption: "One-Step Denoised Campanile, 750 steps" },
@@ -177,11 +192,11 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                         { src: "/images/proj5/noisy240.png", caption: "Noisy Campanile, 240" },
                         { src: "/images/proj5/noisy390.png", caption: "Noisy Campanile, 390" },
                         { src: "/images/proj5/noisy540.png", caption: "Noisy Campanile, 540" },
-                        { src: "/images/proj5/noisy690.png", caption: "Noisy Campanile, 690" },
-                        { src: "/images/proj5/campanileOG.jpg", caption: "original campanile" },
+                        { src: "/images/proj5/noisy690.png", caption: "Noisy Campanile, 690", breakAfter: true },
                         { src: "/images/proj5/guassian_p4.png", caption: "Gaussian Blurred Campanile" },
                         { src: "/images/proj5/single_p4.png", caption: "One-Step Denoised Campanile" },
                         { src: "/images/proj5/finalIter_p4.png", caption: "Iteratively Denoised Campanile" },
+                        { src: "/images/proj5/campanileOG.jpg", caption: "original campanile" },
                     ],
                 },
                 {
@@ -267,19 +282,20 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                         { src: "/images/proj5/p17_camp_4.png", caption: "SDEdit with i_start = 7"},
                         { src: "/images/proj5/p17_camp_5.png", caption: "SDEdit with i_start = 10"},
                         { src: "/images/proj5/p17_camp_6.png", caption: "SDEdit with i_start = 20"},
-                        { src: "/images/proj5/campanileOG.jpg", caption: "campanile (original)"},
+                        { src: "/images/proj5/campanileOG.jpg", caption: "campanile (original)", breakAfter: true},
                         { src: "/images/proj5/cactus7_1.png ", caption: "SDEdit with i_start = 1"},
                         { src: "/images/proj5/cactus7_2.png", caption: "SDEdit with i_start = 3"},
                         { src: "/images/proj5/cactus7_3.png", caption: "SDEdit with i_start = 5"},
                         { src: "/images/proj5/cactus7_4.png", caption: "SDEdit with i_start = 7"},
                         { src: "/images/proj5/cactus7_5.png", caption: "SDEdit with i_start = 10"},
                         { src: "/images/proj5/cactus7_6.png", caption: "SDEdit with i_start = 20"},
-                        { src: "/images/proj5/cactusOG.png", caption: "Original Cactus"},
-                        { src: "/images/proj5/puppy7_1.png", caption: "SDEdit with i_start = 3"},
-                        { src: "/images/proj5/puppy7_2.png", caption: "SDEdit with i_start = 5"},
-                        { src: "/images/proj5/puppy7_3.png", caption: "SDEdit with i_start = 7"},
-                        { src: "/images/proj5/puppy7_4.png", caption: "SDEdit with i_start = 10"},
-                        { src: "/images/proj5/puppy7_5.png", caption: "SDEdit with i_start = 20"},
+                        { src: "/images/proj5/cactusOG.png", caption: "Original Cactus", breakAfter: true},
+                        { src: "/images/proj5/puppy7_1.png", caption: "SDEdit with i_start = 1"},
+                        { src: "/images/proj5/puppy7_2.png", caption: "SDEdit with i_start = 3"},
+                        { src: "/images/proj5/puppy7_3.png", caption: "SDEdit with i_start = 5"},
+                        { src: "/images/proj5/puppy7_4.png", caption: "SDEdit with i_start = 7"},
+                        { src: "/images/proj5/puppy7_5.png", caption: "SDEdit with i_start = 10"},
+                        { src: "/images/proj5/puppy7_6.png", caption: "SDEdit with i_start = 20"},
                         { src: "/images/proj5/puppy.png", caption: "Original Puppy"},
                     ],
                 },
@@ -293,13 +309,14 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                         { src: "/images/proj5/arthur4_171.png", caption: "i_start = 7" },
                         { src: "/images/proj5/arthur5_171.png", caption: "i_start = 10" },
                         { src: "/images/proj5/arthur6_171.png", caption: "i_start = 20" },
+                        { src: "/images/proj5/arth.jpeg", caption: "Original Drawing", breakAfter: true },
                         { src: "/images/proj5/ppl171_1.png", caption: "i_start = 1" },
                         { src: "/images/proj5/ppl171_2.png", caption: "i_start = 3" },
                         { src: "/images/proj5/ppl171_3.png", caption: "i_start = 5" },
                         { src: "/images/proj5/ppl171_4.png", caption: "i_start = 7" },
                         { src: "/images/proj5/ppl171_5.png", caption: "i_start = 10" },
                         { src: "/images/proj5/ppl171_6.png", caption: "i_start = 20" },
-                        { src: "/images/proj5/ppl171_0.png", caption: "Original Drawing" },
+                        { src: "/images/proj5/ppl171_0.png", caption: "Original Drawing", breakAfter: true },
                         { src: "/images/proj5/pop171_1.png", caption: "i_start = 1" },
                         { src: "/images/proj5/pop171_2.png", caption: "i_start = 3" },
                         { src: "/images/proj5/pop171_3.png", caption: "i_start = 5" },
@@ -365,11 +382,11 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
   return clean`,
                     gallery: [
                         { src: "/images/proj5/p171_mask1.png", caption: "mask" },
-                        { src: "/images/proj5/p171_img1.png", caption: "campanile inpainted" },
+                        { src: "/images/proj5/p171_img1.png", caption: "campanile inpainted", breakAfter: true },
                         { src: "/images/proj5/puppy.png", caption: "Original Puppy"},
-                        { src: "/images/proj5/p172_maskingimg2.png", caption: "puppy inpainted" },
-                        { src: "/images/proj5/mask2.png", caption: "mask" },
+                        { src: "/images/proj5/p172_maskingimg2.png", caption: "puppy inpainted", breakAfter: true },
                         { src: "/images/proj5/ctree.png", caption: "christmas scene" },
+                        { src: "/images/proj5/mask2.png", caption: "mask" },
                         { src: "/images/proj5/p172_final.png", caption: "christmas scene inpainted" },
                         { src: "/images/proj5/p172_img3.png", caption: "christmas scene inpainted 2" },
                         
@@ -387,14 +404,14 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                         { src: "/images/proj5/rocket4.png", caption: "noise level = 7" },
                         { src: "/images/proj5/rocket5.png", caption: "noise level = 10" },
                         { src: "/images/proj5/rocket6.png", caption: "noise level = 20" },
-                        { src: "/images/proj5/campanileOG.jpg", caption: "campanile (original)"},
+                        { src: "/images/proj5/campanileOG.jpg", caption: "campanile (original)", breakAfter: true },
                         { src: "/images/proj5/c1.png", caption: "noise level = 1" },
                         { src: "/images/proj5/c2.png", caption: "noise level = 3" },
                         { src: "/images/proj5/c3.png", caption: "noise level = 5" },
                         { src: "/images/proj5/c4.png", caption: "noise level = 7" },
                         { src: "/images/proj5/c5.png", caption: "noise level = 10" },
                         { src: "/images/proj5/c6.png", caption: "noise level = 20" },
-                        { src: "/images/proj5/ctree.png", caption: "christmas scene (original)"},
+                        { src: "/images/proj5/ctree.png", caption: "christmas scene (original)", breakAfter: true },
                         { src: "/images/proj5/bar1.png", caption: "noise level = 1" },
                         { src: "/images/proj5/bar2.png", caption: "noise level = 3" },
                         { src: "/images/proj5/bar3.png", caption: "noise level = 5" },
@@ -476,9 +493,9 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
   return clean`,
                     gallery: [
                         { src: "/images/proj5/campMan1.png", caption: "an oil painting of an old man" },
-                        { src: "/images/proj5/campMan2.png", caption: "an oil painting of people around a campfire" },
+                        { src: "/images/proj5/campMan2.png", caption: "an oil painting of people around a campfire", breakAfter: true },
                         { src: "/images/proj5/gg1.png", caption: "an oil painting of a sunset from on top of the mountain" },
-                        { src: "/images/proj5/gg2.png", caption: "a photo of a boat under the Golden Gate Bridge" },
+                        { src: "/images/proj5/gg2.png", caption: "a photo of a boat under the Golden Gate Bridge",breakAfter: true },
                         { src: "/images/proj5/man1.png", caption: "a pink water bottle" },
                         { src: "/images/proj5/man2.png", caption: "a man wearing a suit" },
                     ],
@@ -621,21 +638,38 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
             style={{
                 fontFamily:
                     "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                background:
-                    "linear-gradient(120deg, #f6f7fb 0%, #eef1f4 35%, #f7f8fb 100%)",
-                color: "#0f172a",
+                background: "#ffffff",
+                color: "#111111",
                 minHeight: "100vh",
                 position: "relative",
                 overflowX: "hidden",
             }}
         >
+            {/* Title font (Poppins) */}
+            <link
+                href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=swap"
+                rel="stylesheet"
+            />
+            <style>{`
+                @keyframes bounceTitle {
+                    0% { transform: translateY(0); }
+                    25% { transform: translateY(-8px); }
+                    50% { transform: translateY(0); }
+                    75% { transform: translateY(2px); }
+                    100% { transform: translateY(0); }
+                }
+            `}</style>
+            {/* Subtle aesthetic background */}
             <div
                 style={{
                     position: "fixed",
                     inset: 0,
                     background:
-                        "radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.06) 0%, transparent 35%), radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.06) 0%, transparent 30%), radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 35%)",
+                        "radial-gradient(1200px 600px at 85% 10%, rgba(255,77,141,0.08) 0%, rgba(255,77,141,0) 60%)," +
+                        "radial-gradient(900px 500px at 15% 25%, rgba(255,160,192,0.10) 0%, rgba(255,160,192,0) 55%)," +
+                        "radial-gradient(700px 400px at 80% 80%, rgba(17,17,17,0.06) 0%, rgba(17,17,17,0) 50%)",
                     pointerEvents: "none",
+                    zIndex: 0,
                 }}
             />
 
@@ -648,28 +682,34 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
             >
                 <h1
                     style={{
-                        fontSize: "4.5rem",
-                        fontWeight: 900,
-                        lineHeight: 1.05,
-                        background:
-                            "linear-gradient(135deg, #0f172a 0%, #334155 35%, #111827 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text",
+                        fontFamily: "'Poppins', 'Inter', 'Helvetica Neue', Arial, sans-serif",
+                        fontSize: "4rem",
+                        fontWeight: 800,
+                        lineHeight: 1.08,
                         margin: 0,
                         letterSpacing: "-0.02em",
+                        color: "#111111",
                     }}
                 >
-                    {hero.title}
+                    {renderBouncyTitle(hero.title)}
                 </h1>
+                <div
+                    style={{
+                        width: "120px",
+                        height: "4px",
+                        margin: "0.75rem auto 0 auto",
+                        backgroundColor: "#ff4d8d",
+                        borderRadius: "2px",
+                    }}
+                />
                 <p
                     style={{
                         margin: "1.25rem auto 0 auto",
                         maxWidth: "900px",
-                        fontSize: "1.25rem",
-                        color: "#475569",
+                        fontSize: "1.15rem",
+                        color: "#444444",
                         lineHeight: 1.9,
-                        fontWeight: 500,
+                        fontWeight: 400,
                     }}
                 >
                     {hero.subtitle}
@@ -690,37 +730,27 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 {sections.map((section, sIdx) => (
                     <div key={sIdx} style={{ marginBottom: "4rem" }}>
                         {section.title && (
-                            <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-                                <span
+                            <div style={{ textAlign: "center", marginBottom: "1.25rem" }}>
+                                <h2
                                     style={{
-                                        display: "inline-flex",
-                                        alignItems: "center",
-                                        gap: "0.75rem",
-                                        padding: "0.6rem 1.2rem",
-                                        borderRadius: "999px",
-                                        background:
-                                            "linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(30,41,59,0.85) 100%)",
-                                        color: "#fff",
-                                        fontWeight: 700,
-                                        letterSpacing: "0.06em",
-                                        textTransform: "uppercase",
-                                        fontSize: "0.9rem",
-                                        boxShadow:
-                                            "0 10px 30px rgba(15,23,42,0.12), inset 0 1px 0 rgba(255,255,255,0.15)",
+                                        margin: 0,
+                                        fontSize: "1.4rem",
+                                        fontWeight: 800,
+                                        color: "#111111",
+                                        letterSpacing: "-0.01em",
                                     }}
                                 >
-                                    <span
-                                        style={{
-                                            width: "8px",
-                                            height: "8px",
-                                            background:
-                                                "linear-gradient(135deg, #a5b4fc 0%, #93c5fd 100%)",
-                                            borderRadius: "999px",
-                                            boxShadow: "0 0 16px rgba(147,197,253,0.8)",
-                                        }}
-                                    />
                                     {section.title}
-                                </span>
+                                </h2>
+                                <div
+                                    style={{
+                                        width: "80px",
+                                        height: "3px",
+                                        backgroundColor: "#ff4d8d",
+                                        margin: "0.6rem auto 0",
+                                        borderRadius: "2px",
+                                    }}
+                                />
                             </div>
                         )}
 
@@ -795,8 +825,8 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                                             style={{
                                                 marginTop: "1rem",
                                                 padding: "1rem",
-                                                background: "rgba(15,23,42,0.03)",
-                                                border: "1px solid rgba(15,23,42,0.08)",
+                                                background: "#fff0f6",
+                                                border: "1px solid rgba(255,77,141,0.25)",
                                                 borderRadius: "12px",
                                             }}
                                         >
@@ -813,11 +843,11 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                                                         key={idx}
                                                         style={{
                                                             padding: "0.4rem 0.75rem",
-                                                            background: "#f1f5f9",
+                                                            background: "#ffe4ef",
                                                             borderRadius: "999px",
                                                             fontSize: "0.95rem",
-                                                            color: "#0f172a",
-                                                            border: "1px solid rgba(15,23,42,0.08)",
+                                                            color: "#111111",
+                                                            border: "1px solid rgba(255,77,141,0.35)",
                                                         }}
                                                     >
                                                         {prompt && prompt.length > 0 ? prompt : "(empty prompt)"}
@@ -845,67 +875,76 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                                                 const uniformWidth = 150;
 
                                                 return (
-                                                    <div
-                                                        key={key}
-                                                        onMouseEnter={() => setHoveredKey(key)}
-                                                        onMouseLeave={() => setHoveredKey(null)}
-                                                        style={{
-                                                            display: "inline-block",
-                                                            padding: "3px",
-                                                            borderRadius: "12px",
-                                                            background: "#fff",
-                                                            border: "1px solid rgba(15,23,42,0.12)",
-                                                        }}
-                                                    >
-                                                        {isVideo ? (
-                                                            <video
-                                                                src={imgObj.src}
-                                                                style={{
-                                                                    width: `${uniformWidth}px`,
-                                                                    height: "auto",
-                                                                    display: "block",
-                                                                    filter:
-                                                                        hoveredKey === key
-                                                                            ? "brightness(1.06)"
-                                                                            : "brightness(1)",
-                                                                    transition: "filter 280ms ease",
-                                                                }}
-                                                                autoPlay
-                                                                loop
-                                                                muted
-                                                                playsInline
-                                                            />
-                                                        ) : (
-                                                            <img
-                                                                src={imgObj.src}
-                                                                alt={imgObj.caption || "image"}
-                                                                style={{
-                                                                    width: `${uniformWidth}px`,
-                                                                    height: "auto",
-                                                                    display: "block",
-                                                                    filter:
-                                                                        hoveredKey === key
-                                                                            ? "brightness(1.06)"
-                                                                            : "brightness(1)",
-                                                                    transition: "filter 280ms ease",
-                                                                }}
-                                                            />
-                                                        )}
-                                                        {(imgObj.caption || imgObj.caption === "") && (
-                                                            <div style={{ padding: "0.5rem 0 0", textAlign: "center" }}>
-                                                                <p
+                                                    <>
+                                                        <div
+                                                            key={key}
+                                                            onMouseEnter={() => setHoveredKey(key)}
+                                                            onMouseLeave={() => setHoveredKey(null)}
+                                                            style={{
+                                                                display: "inline-block",
+                                                                padding: "6px",
+                                                                borderRadius: "14px",
+                                                                background: "#ffffff",
+                                                                border: "none",
+                                                                width: `${uniformWidth}px`,
+                                                            }}
+                                                        >
+                                                            {isVideo ? (
+                                                                <video
+                                                                    src={imgObj.src}
                                                                     style={{
-                                                                        margin: 0,
-                                                                        fontSize: "0.95rem",
-                                                                        color: "#334155",
-                                                                        fontWeight: 500,
+                                                                        width: `${uniformWidth}px`,
+                                                                        height: "auto",
+                                                                        display: "block",
+                                                                        filter:
+                                                                            hoveredKey === key
+                                                                                ? "brightness(1.06)"
+                                                                                : "brightness(1)",
+                                                                        transition: "filter 280ms ease",
                                                                     }}
-                                                                >
-                                                                    {imgObj.caption || ""}
-                                                                </p>
-                                                            </div>
+                                                                    autoPlay
+                                                                    loop
+                                                                    muted
+                                                                    playsInline
+                                                                />
+                                                            ) : (
+                                                                <img
+                                                                    src={imgObj.src}
+                                                                    alt={imgObj.caption || "image"}
+                                                                    style={{
+                                                                        width: `${uniformWidth}px`,
+                                                                        height: "auto",
+                                                                        display: "block",
+                                                                        filter:
+                                                                            hoveredKey === key
+                                                                                ? "brightness(1.06)"
+                                                                                : "brightness(1)",
+                                                                        transition: "filter 280ms ease",
+                                                                    }}
+                                                                />
+                                                            )}
+                                                            {(imgObj.caption || imgObj.caption === "") && (
+                                                                <div style={{ padding: "0.5rem 0 0", textAlign: "center", width: "100%" }}>
+                                                                    <p
+                                                                        style={{
+                                                                            margin: 0,
+                                                                            fontSize: "0.95rem",
+                                                                            color: "#334155",
+                                                                            fontWeight: 500,
+                                                                            wordBreak: "break-word",
+                                                                            overflowWrap: "anywhere",
+                                                                            whiteSpace: "normal",
+                                                                        }}
+                                                                    >
+                                                                        {imgObj.caption || ""}
+                                                                    </p>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {imgObj.breakAfter && (
+                                                            <div style={{ flexBasis: "100%", height: 0 }} />
                                                         )}
-                                                    </div>
+                                                    </>
                                                 );
                                             })}
                                         </div>

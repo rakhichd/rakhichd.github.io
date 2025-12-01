@@ -27,6 +27,21 @@
     <title>Rakhi Chadalavada</title>
   </head>
   <body>
+    <script>
+      (function () {
+        try {
+          var params = new URLSearchParams(window.location.search || "");
+          var path = params.get("path");
+          if (path && typeof path === "string") {
+            var cleaned = path.startsWith("/") ? path : "/" + path;
+            // Replace the URL in-place so client routing can render the correct route
+            window.history.replaceState(null, "", cleaned + window.location.hash);
+          }
+        } catch (e) {
+          // no-op
+        }
+      })();
+    </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
