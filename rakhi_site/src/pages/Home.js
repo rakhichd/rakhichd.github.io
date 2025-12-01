@@ -34,6 +34,12 @@ export default function Home() {
       description: "Neural Radiance Field",
       link: "/project4",
     },
+    {
+      title: "Project 5",
+      image: "/images/proj5/man2.png",
+      description: "Fun With Diffusion Models",
+      link: "/project5",
+    }
   ];
 
   const skills = [
