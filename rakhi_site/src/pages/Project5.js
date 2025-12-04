@@ -576,61 +576,84 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
             ],
         },
         
-        // {
-        //     title: "Part B: Applications and Editing",
-        //     text: [
-        //         {
-        //             title: "B.1: Inpainting with Masks",
-        //             paragraph:
-        //                 "By keeping unmasked regions fixed and sampling the masked area, diffusion enables seamless inpainting that respects context.",
-        //             gallery: [
-        //                 { src: "/images/proj5/p171_img1.png", caption: "Input image" },
-        //                 { src: "/images/proj5/p171_mask1.png", caption: "Mask" },
-        //                 { src: "/images/proj5/p172_img3.png", caption: "Another input" },
-        //                 { src: "/images/proj5/p172_final.png", caption: "Inpainted result", standalone: true },
-        //             ],
-        //         },
-        //         {
-        //             title: "B.2: Style/Attribute Variations",
-        //             paragraph:
-        //                 "Small prompt or conditioning changes yield distinct but coherent variations of the same subject.",
-        //             gallery: [
-        //                 { src: "/images/proj5/arthur1_171.png" },
-        //                 { src: "/images/proj5/arthur2_171.png" },
-        //                 { src: "/images/proj5/arthur3_171.png" },
-        //                 { src: "/images/proj5/arthur4_171.png" },
-        //                 { src: "/images/proj5/arthur5_171.png" },
-        //                 { src: "/images/proj5/arthur6_171.png" },
-        //             ],
-        //         },
-        //         {
-        //             title: "B.2: Style/Attribute Variations",
-        //             paragraph:
-        //                 "Small prompt or conditioning changes yield distinct but coherent variations of the same subject.",
-        //             gallery: [
-        //                 { src: "/images/proj5/arthur1_171.png" },
-        //                 { src: "/images/proj5/arthur2_171.png" },
-        //                 { src: "/images/proj5/arthur3_171.png" },
-        //                 { src: "/images/proj5/arthur4_171.png" },
-        //                 { src: "/images/proj5/arthur5_171.png" },
-        //                 { src: "/images/proj5/arthur6_171.png" },
-        //             ],
-        //         },
-        //         {
-        //             title: "B.3: Class Grids",
-        //             paragraph:
-        //                 "Sampling multiple seeds for a class illustrates the diversity the model can produce.",
-        //             gallery: [
-        //                 { src: "/images/proj5/bird171_1.png" },
-        //                 { src: "/images/proj5/bird171_2.png" },
-        //                 { src: "/images/proj5/bird171_3.png" },
-        //                 { src: "/images/proj5/bird171_4.png" },
-        //                 { src: "/images/proj5/bird171_5.png" },
-        //                 { src: "/images/proj5/bird171_6.png" },
-        //             ],
-        //         },
-        //     ],
-        // },
+        {
+            title: "Part B: Flow Matching from Scratch!",
+            text: [
+                {
+                    title: "Part 1.1: Training a Single-Step Denoising UNet - Implementing the UNet",
+                    paragraph:
+                        "Given a noisy image , we aim to train a denoiser such that it maps to a clean image. This denoiser is a UNet.",
+                    gallery: [
+                        { src: "/images/proj5/unet.png", caption: "Unconditional UNet", breakAfter: true },
+                        { src: "/images/proj5/unet2.png", caption: "Standard UNet Operations", breakAfter: true },
+                    ],
+                },
+                {
+                    title: "Part 1.2 Using the UNet to Train a Denoiser",
+                    paragraph:
+                        "To train our denoiser, we need to generate training data pairs of (z, x), where each x is a clean MNIST digit. For each training batch, we can generate z from x using the noise process of z = x * sigma * e where e ~ N(0, 1). Below, we use varying noise levels (sigma)to see its effect, sigma = [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]. As sigma increases, we see that the image is noisier",
+                    gallery: [
+                        { src: "/images/proj5/p12_1.png" },
+                        { src: "/images/proj5/p12_2.png" },
+                        { src: "/images/proj5/p12_3.png" },
+                        { src: "/images/proj5/p12_4.png" },
+                    ],
+                },
+                {
+                    title: "Part 1.2.1 Training",
+                    paragraph: "We now train the model to perform denoising.",
+                    gallery: [
+                        { src: "/images/proj5/plot_1.png", breakAfter: true },
+                        { src: "/images/proj5/denoise1.png", breakAfter: true },
+                        { src: "/images/proj5/p111.png", breakAfter: true },
+                        { src: "/images/proj5/ineed.png" },
+                    ],
+                },
+                {
+                    title: "Part 1.2.2 Out-of-Distribution Testing",
+                    paragraph: "The denoiser was trained on MNIST digits noised with sigma = 0.5. We want to observe how the denoiser performs on different sigmas that it wasn't trained for.",
+                    gallery: [
+                        { src: "/images/proj5/p122_1.png" },
+                        { src: "/images/proj5/p122_2.png" },
+                        { src: "/images/proj5/p122_3png.png" },
+                        { src: "/images/proj5/p122_4.png" },
+                        { src: "/images/proj5/p122_5.png" },
+                    ],
+                },
+                {
+                    title: "Part 1.2.3 Denoising Pure Noise",
+                    paragraph: "We sample from the denoiser that was trained to denoise pure noise.",
+                    gallery: [
+                        { src: "/images/proj5/epoch_123_0.png" },
+                        { src: "/images/proj5/epoch_123_1.png" },
+                        { src: "/images/proj5/train123.png" },
+                    ],
+                },
+                {
+                    title: "Generated Output Patterns",
+                    paper: true,
+                    content: [
+                        "In each of the generated outputs that are seen above, we can observe that they all look very similar to each other. This is likely because when training the denoiser on pure Gaussian noise with an MSE loss, the network learns to map random noise to the average of all MNIST digits. Since the input does not have a structure or signal, the model cannot reconstruct specific digits, so it outputs a blurry centroid image that vaguely resembles a digit. Across epochs, the outputs do not vary much—they may become slightly more focused or brighter, but all generated images remain extremely similar. This occurs because the network is optimizing for the mean squared error over the entire dataset, which is minimized by producing the average digit rather than any individual one.",
+                    ],
+                },
+                {
+                    title: "Part 2: Training a Flow Matching Model",
+                    paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching.",
+                    gallery: [
+                        
+                    ],
+                },
+                {
+                    title: "Part 2: Training a Flow Matching Model",
+                    paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching.",
+                    gallery: [
+                        { src: "/images/proj5/epoch0_23.png" },
+                        { src: "/images/proj5/epoch1_23.png", caption: "Epoch 5" },
+                        { src: "/images/proj5/epoch2_23.png", caption: "Epoch 10" },
+                    ],
+                },
+            ],
+        },
     ];
 
     return (
@@ -872,7 +895,11 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                                                 const isVideo =
                                                     !!(imgObj && imgObj.src) &&
                                                     /\.(mp4|webm|ogg)$/i.test(imgObj.src);
-                                                const uniformWidth = 150;
+                                                const isPartBSection =
+                                                    section &&
+                                                    typeof section.title === "string" &&
+                                                    section.title.startsWith("Part B");
+                                                const uniformWidth = isPartBSection ? 420 : 150;
 
                                                 return (
                                                     <>
