@@ -644,14 +644,41 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                     ],
                 },
                 {
-                    title: "Part 2: Training a Flow Matching Model",
+                    title: "2.2 Training the UNET",
                     paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching.",
+                    gallery: [
+                        { src: "/images/proj5/p2_12_curve.png" },
+                    ],
+                },
+                {
+                    title: "2.3 Sampling from the UNet",
+                    paragraph: "We sample from the UNet that was trained to denoise pure noise.",
                     gallery: [
                         { src: "/images/proj5/epoch0_23.png" },
                         { src: "/images/proj5/epoch1_23.png", caption: "Epoch 5" },
                         { src: "/images/proj5/epoch2_23.png", caption: "Epoch 10" },
                     ],
                 },
+                {
+                    title: "2.5 Training the UNet",
+                    paragraph: "unconditional generation periodically",
+                    gallery: [
+                        { src: "/images/proj5/p25_plot.png" },
+                    ],
+                },
+                {
+                    title: "2.6 Sampling from the UNet",
+                    paragraph: "Now we will sample with class-conditioning and will use classifier-free guidance with a scale of 5.0",
+                    gallery: [
+                        { src: "/images/proj5/p26_1.png"},
+                        { src: "/images/proj5/p26_5.png"},
+                        { src: "/images/proj5/p26_10.png"},
+                        { src: "/images/proj5/p26_1_1.png", caption: "Without Scheduler"},
+                        { src: "/images/proj5/p26_1_5.png", caption: "Without Scheduler"},
+                        { src: "/images/proj5/p26_1_10.png", caption: "Without Scheduler"},
+
+                    ],
+                }
             ],
         },
     ];
