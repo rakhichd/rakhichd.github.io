@@ -602,6 +602,7 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 {
                     title: "Part 1.2.1 Training",
                     paragraph: "We now train the model to perform denoising.",
+                    paragraph1: "The following parameters were used for training: batch_size = 256, learning_rate = 1e-4,noise_level = 0.5, hidden_dim = 128, num_epochs = 5",
                     gallery: [
                         { src: "/images/proj5/plot_1.png", breakAfter: true },
                         { src: "/images/proj5/denoise1.png", breakAfter: true },
@@ -622,7 +623,7 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 },
                 {
                     title: "Part 1.2.3 Denoising Pure Noise",
-                    paragraph: "We sample from the denoiser that was trained to denoise pure noise.",
+                    paragraph: "We sample from the denoiser that was trained to denoise pure noise. The denoiser is able to generate MNIST digits from pure random Gaussian noise.",
                     gallery: [
                         { src: "/images/proj5/epoch_123_0.png" },
                         { src: "/images/proj5/epoch_123_1.png" },
@@ -644,32 +645,49 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                     ],
                 },
                 {
-                    title: "2.2 Training the UNET",
-                    paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching.",
+                    title: "2.1 Adding Time Conditioning to UNet",
+                    paragraph: "We add time conditioning to the UNet by concatenating the time embedding to the input of the UNet.",
                     gallery: [
-                        { src: "/images/proj5/p2_12_curve.png" },
+                        { src: "/images/proj5/f1.png", breakAfter: true },
+                        { src: "/images/proj5/f2.png" },
+                    ],
+                },
+                {
+                    title: "2.2 Training the UNET",
+                    paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching. We used the following algorthim in order to train the time-conditioned UNet:",
+                    gallery: [
+                        { src: "/images/proj5/f3.png", breakAfter: true },
+                        { src: "/images/proj5/p2_12_curve.png", caption: "Training Curve for the time-conditioned UNet over the whole training process" },
                     ],
                 },
                 {
                     title: "2.3 Sampling from the UNet",
-                    paragraph: "We sample from the UNet that was trained to denoise pure noise.",
+                    paragraph: "We sample from the UNet that was trained to denoise pure noise. We use the following algorthim to sample from the UNet:",
                     gallery: [
+                        { src: "/images/proj5/f4.png", breakAfter: true },
                         { src: "/images/proj5/epoch0_23.png" },
                         { src: "/images/proj5/epoch1_23.png", caption: "Epoch 5" },
                         { src: "/images/proj5/epoch2_23.png", caption: "Epoch 10" },
                     ],
                 },
                 {
+                    title: "2.4 Adding Class-Conditioning to UNet",
+                    paragraph: "In order to get better results and have more control over image generations, one improvement to make is to condition the UNet on the class of the digit 0-9. To do this, I added 2 more FCBlocks to the Unet. I also wanted to make sure that the UNet would still work even if it wasn’t being conditioned on the class, so I used the concept of dropout where 10% of the time, the class conditioning vector is being dropped by being set to 0. That allows us to condition the UNet on time and class.",
+                },
+                {
                     title: "2.5 Training the UNet",
-                    paragraph: "unconditional generation periodically",
+                    paragraph: "Now I perform training again similar to the time-only training, with the exception of using the conditioning vector and doing unconditional generation periodically. The following algorithm was used to do this:",
                     gallery: [
+                        { src: "/images/proj5/f5.png", breakAfter: true },
                         { src: "/images/proj5/p25_plot.png" },
                     ],
                 },
                 {
                     title: "2.6 Sampling from the UNet",
-                    paragraph: "Now we will sample with class-conditioning and will use classifier-free guidance with a scale of 5.0",
+                    paragraph: "Now we will sample with class-conditioning and will use classifier-free guidance with a scale of 5.0 using the following algorithm:",
+                    paragraph1: "We also used a scheduler throughout to sample from the UNet. In the last three images that were generated for the digits, I removed the scheduler to see how the images would look without it. To compensate for the loss of the scheduler, I increased the learning rate from 1e-4 to 1e-2 and keeping the other parameters the same as before.",
                     gallery: [
+                        {src: "/images/proj5/f6.png", breakAfter: true },
                         { src: "/images/proj5/p26_1.png"},
                         { src: "/images/proj5/p26_5.png"},
                         { src: "/images/proj5/p26_10.png"},
