@@ -95,19 +95,19 @@ export default function Project5() {
                     title: "1.1 Implementing the Forward Process",
                     paragraph:
                         "take a clean image and add noise to it",
-                    code: `def forward(im, t):
+//                     code: `def forward(im, t):
 
-  """
-  Args:
-    im : torch tensor of size (1, 3, 64, 64) representing the clean image
-    t : integer timestep
-  Returns:
-    im_noisy : torch tensor of size (1, 3, 64, 64) representing the noisy image at timestep t
-  """
-  with torch.no_grad():
-    e = torch.randn_like(im)
-    im_noisy = torch.sqrt(alphas_cumprod[t]) * im + torch.sqrt(1 - alphas_cumprod[t]) * e
-  return im_noisy`,
+//   """
+//   Args:
+//     im : torch tensor of size (1, 3, 64, 64) representing the clean image
+//     t : integer timestep
+//   Returns:
+//     im_noisy : torch tensor of size (1, 3, 64, 64) representing the noisy image at timestep t
+//   """
+//   with torch.no_grad():
+//     e = torch.randn_like(im)
+//     im_noisy = torch.sqrt(alphas_cumprod[t]) * im + torch.sqrt(1 - alphas_cumprod[t]) * e
+//   return im_noisy`,
                     gallery: [
                         { src: "/images/proj5/c250.png", caption: "250 steps" },
                         { src: "/images/proj5/c500.png", caption: "500 steps" },
@@ -144,49 +144,49 @@ export default function Project5() {
                 {
                     title: "1.4 Iterative Denoising",
                     paragraph: "Diffusion models are designed to denoise iteratively. Below is the timestep schedule and the iterative denoising loop.",
-                    code: `# Timestep schedule: start at 990 and stride by 30 down to 0
-strided_timesteps = torch.arange(990, -1, -30)
+//                     code: `# Timestep schedule: start at 990 and stride by 30 down to 0
+// strided_timesteps = torch.arange(990, -1, -30)
 
 
-def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True):
-  image = im_noisy
+// def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True):
+//   image = im_noisy
 
-  with torch.no_grad():
-    for i in range(i_start, len(timesteps) - 1):
-      # Get timesteps
-      t = timesteps[i]
-      prev_t = timesteps[i+1]
-      alpha_cumprod = alphas_cumprod[t].to(image.device)
-      alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
-      alpha = alpha_cumprod / alpha_cumprod_prev
-      beta = 1 - alpha
+//   with torch.no_grad():
+//     for i in range(i_start, len(timesteps) - 1):
+//       # Get timesteps
+//       t = timesteps[i]
+//       prev_t = timesteps[i+1]
+//       alpha_cumprod = alphas_cumprod[t].to(image.device)
+//       alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
+//       alpha = alpha_cumprod / alpha_cumprod_prev
+//       beta = 1 - alpha
 
-      # Get noise estimate
-      model_output = stage_1.unet(
-          image.half(),
-          t,
-          encoder_hidden_states=prompt_embeds,
-          return_dict=False
-      )[0]
+//       # Get noise estimate
+//       model_output = stage_1.unet(
+//           image.half(),
+//           t,
+//           encoder_hidden_states=prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      # Split estimate into noise and variance estimate
-      noise_est, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       # Split estimate into noise and variance estimate
+//       noise_est, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
 
-      step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
-      step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
-      x0 = (image - torch.sqrt(1 - alpha_cumprod) * noise_est) / torch.sqrt(alpha_cumprod)
-      x0 = x0.clamp(-1, 1)
-      v0 = add_variance(predicted_variance.float(), t, torch.zeros_like(image).float() )
-      pred_prev_image = (step1 * x0) + (step2 * image) + v0
+//       step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
+//       step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
+//       x0 = (image - torch.sqrt(1 - alpha_cumprod) * noise_est) / torch.sqrt(alpha_cumprod)
+//       x0 = x0.clamp(-1, 1)
+//       v0 = add_variance(predicted_variance.float(), t, torch.zeros_like(image).float() )
+//       pred_prev_image = (step1 * x0) + (step2 * image) + v0
 
-      image = pred_prev_image
+//       image = pred_prev_image
 
-      if display and (i % 5 == 0):
-        media.show_image(image[0].permute(1,2,0).detach().cpu().float() / 2 + 0.5)
+//       if display and (i % 5 == 0):
+//         media.show_image(image[0].permute(1,2,0).detach().cpu().float() / 2 + 0.5)
 
-    clean = image.cpu().detach().numpy()
+//     clean = image.cpu().detach().numpy()
 
-  return clean`,
+//   return clean`,
                     gallery: [
                         { src: "/images/proj5/noisy90.png", caption: "Noisy Campanile, 90" },
                         { src: "/images/proj5/noisy240.png", caption: "Noisy Campanile, 240" },
@@ -214,55 +214,55 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 {
                     title: "1.6 Classifier-Free Guidance (CFG)",
                     paragraph: "improve image quality at the expense of image diversity",
-                    code: `def iterative_denoise_cfg(im_noisy, i_start, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
+//                     code: `def iterative_denoise_cfg(im_noisy, i_start, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
 
-  image = im_noisy
+//   image = im_noisy
 
-  with torch.no_grad():
-    for i in range(i_start, len(timesteps) - 1):
-      # Get timesteps
-      t = timesteps[i]
-      prev_t = timesteps[i+1]
-      alpha_cumprod = alphas_cumprod[t].to(image.device)
-      alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
-      alpha = alpha_cumprod / alpha_cumprod_prev
-      beta = 1 - alpha
-      # Get cond noise estimate
-      model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=prompt_embeds,
-          return_dict=False
-      )[0]
+//   with torch.no_grad():
+//     for i in range(i_start, len(timesteps) - 1):
+//       # Get timesteps
+//       t = timesteps[i]
+//       prev_t = timesteps[i+1]
+//       alpha_cumprod = alphas_cumprod[t].to(image.device)
+//       alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
+//       alpha = alpha_cumprod / alpha_cumprod_prev
+//       beta = 1 - alpha
+//       # Get cond noise estimate
+//       model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      # Get uncond noise estimate
-      uncond_model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=uncond_prompt_embeds,
-          return_dict=False
-      )[0]
+//       # Get uncond noise estimate
+//       uncond_model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=uncond_prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      # Split estimate into noise and variance estimate
-      noise_est, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
-      uncond_noise_est, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
+//       # Split estimate into noise and variance estimate
+//       noise_est, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       uncond_noise_est, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
 
-      # Compute the CFG noise estimate based on equation 4
-      cfg = uncond_noise_est + scale * (noise_est - uncond_noise_est)
+//       # Compute the CFG noise estimate based on equation 4
+//       cfg = uncond_noise_est + scale * (noise_est - uncond_noise_est)
 
-      # Get 'pred_prev_image', the next less noisy image.
-      step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
-      step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
-      x0 = (image - torch.sqrt(1 - alpha_cumprod) * cfg) / torch.sqrt(alpha_cumprod)
-      x0 = x0.clamp(-1, 1)
-      v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
-      pred_prev_image = (step1 * x0) + (step2 * image) + v0
+//       # Get 'pred_prev_image', the next less noisy image.
+//       step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
+//       step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
+//       x0 = (image - torch.sqrt(1 - alpha_cumprod) * cfg) / torch.sqrt(alpha_cumprod)
+//       x0 = x0.clamp(-1, 1)
+//       v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
+//       pred_prev_image = (step1 * x0) + (step2 * image) + v0
 
-      image = pred_prev_image
+//       image = pred_prev_image
 
-    clean = image.cpu().detach().numpy()
+//     clean = image.cpu().detach().numpy()
 
-  return clean`,
+//   return clean`,
                     gallery: [
                         { src: "/images/proj5/p16_1.png", caption: "CFG Scale = 7"},
                         { src: "/images/proj5/p16_2.png", caption: "CFG Scale = 7"},
@@ -329,57 +329,57 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 {
                     title: "1.7.2 Inpainting",
                     paragraph: "given an image and a binary mask, we can create a new image that has the same content where m = 0 and new content where m = 1",
-                    code: `def inpaint(original_image, mask, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
+//                     code: `def inpaint(original_image, mask, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
 
-  image = torch.randn_like(original_image).to(device).half()
+//   image = torch.randn_like(original_image).to(device).half()
 
-  with torch.no_grad():
-    for i in range(len(timesteps) - 1):
-      # Get timesteps
-      t = timesteps[i]
-      prev_t = timesteps[i+1]
+//   with torch.no_grad():
+//     for i in range(len(timesteps) - 1):
+//       # Get timesteps
+//       t = timesteps[i]
+//       prev_t = timesteps[i+1]
 
-      alpha_cumprod = alphas_cumprod[t].to(image.device)
-      alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
-      alpha = alpha_cumprod / alpha_cumprod_prev
-      beta = 1 - alpha
+//       alpha_cumprod = alphas_cumprod[t].to(image.device)
+//       alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
+//       alpha = alpha_cumprod / alpha_cumprod_prev
+//       beta = 1 - alpha
 
-      model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=prompt_embeds,
-          return_dict=False
-      )[0]
+//       model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      # Get uncond noise estimate
-      uncond_model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=uncond_prompt_embeds,
-          return_dict=False
-      )[0]
+//       # Get uncond noise estimate
+//       uncond_model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=uncond_prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      # Split estimate into noise and variance estimate
-      noise_est, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
-      uncond_noise_est, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
+//       # Split estimate into noise and variance estimate
+//       noise_est, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       uncond_noise_est, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
 
-      # Compute the CFG noise estimate based on equation 4
-      cfg = uncond_noise_est + scale * (noise_est - uncond_noise_est)
+//       # Compute the CFG noise estimate based on equation 4
+//       cfg = uncond_noise_est + scale * (noise_est - uncond_noise_est)
 
-      # Get 'pred_prev_image', the next less noisy image.
-      step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
-      step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
-      x0 = (image - torch.sqrt(1 - alpha_cumprod) * cfg) / torch.sqrt(alpha_cumprod)
-      x0 = x0.clamp(-1, 1)
-      v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
-      pred_prev_image = (step1 * x0) + (step2 * image) + v0
+//       # Get 'pred_prev_image', the next less noisy image.
+//       step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
+//       step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
+//       x0 = (image - torch.sqrt(1 - alpha_cumprod) * cfg) / torch.sqrt(alpha_cumprod)
+//       x0 = x0.clamp(-1, 1)
+//       v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
+//       pred_prev_image = (step1 * x0) + (step2 * image) + v0
 
-      # Force pixels outside mask to original with correct noise for prev_t
-      image = mask.to(device).half() * pred_prev_image + (1 - mask.to(device).half()) * forward(original_image.to(device).half(), prev_t)
+//       # Force pixels outside mask to original with correct noise for prev_t
+//       image = mask.to(device).half() * pred_prev_image + (1 - mask.to(device).half()) * forward(original_image.to(device).half(), prev_t)
 
-    clean = image.cpu().detach().numpy()
+//     clean = image.cpu().detach().numpy()
 
-  return clean`,
+//   return clean`,
                     gallery: [
                         { src: "/images/proj5/p171_mask1.png", caption: "mask" },
                         { src: "/images/proj5/p171_img1.png", caption: "campanile inpainted", breakAfter: true },
@@ -425,72 +425,72 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 {
                     title: "1.8 Visual Anagrams",
                     paragraph: "create optical illusions with diffusion models. the two different prompts that i used to create the images are listed below.",
-                    code: `def visual_anagrams(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
-  image = image.half().to('cuda')
-  with torch.no_grad():
-    for i in range(len(timesteps) - 1):
-      # Get timesteps
-      t = timesteps[i]
-      prev_t = timesteps[i+1]
+//                     code: `def visual_anagrams(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
+//   image = image.half().to('cuda')
+//   with torch.no_grad():
+//     for i in range(len(timesteps) - 1):
+//       # Get timesteps
+//       t = timesteps[i]
+//       prev_t = timesteps[i+1]
 
-      alpha_cumprod = alphas_cumprod[t].to(image.device)
-      alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
-      alpha = alpha_cumprod / alpha_cumprod_prev
-      beta = 1 - alpha
+//       alpha_cumprod = alphas_cumprod[t].to(image.device)
+//       alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
+//       alpha = alpha_cumprod / alpha_cumprod_prev
+//       beta = 1 - alpha
 
-      model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=prompt_embeds1,
-          return_dict=False
-      )[0]
+//       model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=prompt_embeds1,
+//           return_dict=False
+//       )[0]
 
-      uncond_model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=uncond_prompt_embeds,
-          return_dict=False
-      )[0]
+//       uncond_model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=uncond_prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      noise_est1, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
-      uncond_noise_est1, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
-      ep1 = uncond_noise_est1 + scale * (noise_est1 - uncond_noise_est1)
+//       noise_est1, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       uncond_noise_est1, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
+//       ep1 = uncond_noise_est1 + scale * (noise_est1 - uncond_noise_est1)
 
-      # flipping process now 
-      flip = torch.flip(image, dims=[2])
-      model_output = stage_1.unet(
-          flip,
-          t,
-          encoder_hidden_states=prompt_embeds2,
-          return_dict=False
-      )[0]
+//       # flipping process now 
+//       flip = torch.flip(image, dims=[2])
+//       model_output = stage_1.unet(
+//           flip,
+//           t,
+//           encoder_hidden_states=prompt_embeds2,
+//           return_dict=False
+//       )[0]
 
-      uncond_model_output = stage_1.unet(
-          flip,
-          t,
-          encoder_hidden_states=uncond_prompt_embeds,
-          return_dict=False
-      )[0]
+//       uncond_model_output = stage_1.unet(
+//           flip,
+//           t,
+//           encoder_hidden_states=uncond_prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      noise_est2, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
-      uncond_noise_est2, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
-      ep2 = uncond_noise_est2 + scale * (noise_est2 - uncond_noise_est2)
-      ep2 = torch.flip(ep2, dims=[2])
+//       noise_est2, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       uncond_noise_est2, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
+//       ep2 = uncond_noise_est2 + scale * (noise_est2 - uncond_noise_est2)
+//       ep2 = torch.flip(ep2, dims=[2])
 
-      # calc ep 
-      ep = (ep1 + ep2) / 2
+//       # calc ep 
+//       ep = (ep1 + ep2) / 2
 
-      step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
-      step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
-      x0 = (image - torch.sqrt(1 - alpha_cumprod) * ep) / torch.sqrt(alpha_cumprod)
-      x0 = x0.clamp(-1, 1)
-      v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
-      pred_prev_image = (step1 * x0) + (step2 * image) + v0
+//       step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
+//       step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
+//       x0 = (image - torch.sqrt(1 - alpha_cumprod) * ep) / torch.sqrt(alpha_cumprod)
+//       x0 = x0.clamp(-1, 1)
+//       v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
+//       pred_prev_image = (step1 * x0) + (step2 * image) + v0
 
-      image = pred_prev_image
+//       image = pred_prev_image
 
-    clean = image.cpu().detach().numpy()
-  return clean`,
+//     clean = image.cpu().detach().numpy()
+//   return clean`,
                     gallery: [
                         { src: "/images/proj5/campMan1.png", caption: "an oil painting of an old man" },
                         { src: "/images/proj5/campMan2.png", caption: "an oil painting of people around a campfire", breakAfter: true },
@@ -503,71 +503,71 @@ def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True)
                 {
                     title: "1.9 Hybrid Images",
                     paragraph: "we create a composite noise estimate, by estimating the noise with two different text prompts, and then combining low frequencies from one noise estimate with high frequencies of the other",
-                    code: `def make_hybrids(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
+//                     code: `def make_hybrids(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
 
-  image = image.half().to('cuda')
-  with torch.no_grad():
-    for i in range(len(timesteps) - 1):
-      # Get timesteps
-      t = timesteps[i]
-      prev_t = timesteps[i+1]
+//   image = image.half().to('cuda')
+//   with torch.no_grad():
+//     for i in range(len(timesteps) - 1):
+//       # Get timesteps
+//       t = timesteps[i]
+//       prev_t = timesteps[i+1]
 
-      alpha_cumprod = alphas_cumprod[t].to(image.device)
-      alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
-      alpha = alpha_cumprod / alpha_cumprod_prev
-      beta = 1 - alpha
+//       alpha_cumprod = alphas_cumprod[t].to(image.device)
+//       alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
+//       alpha = alpha_cumprod / alpha_cumprod_prev
+//       beta = 1 - alpha
 
-      model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=prompt_embeds1,
-          return_dict=False
-      )[0]
+//       model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=prompt_embeds1,
+//           return_dict=False
+//       )[0]
 
-      uncond_model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=uncond_prompt_embeds,
-          return_dict=False
-      )[0]
+//       uncond_model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=uncond_prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      noise_est1, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
-      uncond_noise_est1, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
-      ep1 = uncond_noise_est1 + scale * (noise_est1 - uncond_noise_est1)
+//       noise_est1, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       uncond_noise_est1, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
+//       ep1 = uncond_noise_est1 + scale * (noise_est1 - uncond_noise_est1)
 
-      # second one now 
-      model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=prompt_embeds2,
-          return_dict=False
-      )[0]
+//       # second one now 
+//       model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=prompt_embeds2,
+//           return_dict=False
+//       )[0]
 
-      uncond_model_output = stage_1.unet(
-          image,
-          t,
-          encoder_hidden_states=uncond_prompt_embeds,
-          return_dict=False
-      )[0]
+//       uncond_model_output = stage_1.unet(
+//           image,
+//           t,
+//           encoder_hidden_states=uncond_prompt_embeds,
+//           return_dict=False
+//       )[0]
 
-      noise_est1, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
-      uncond_noise_est1, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
-      ep2 = uncond_noise_est1 + scale * (noise_est1 - uncond_noise_est1)
+//       noise_est1, predicted_variance = torch.split(model_output, image.shape[1], dim=1)
+//       uncond_noise_est1, _ = torch.split(uncond_model_output, image.shape[1], dim=1)
+//       ep2 = uncond_noise_est1 + scale * (noise_est1 - uncond_noise_est1)
 
-      highpass = ep2 - TF.gaussian_blur(ep2, kernel_size=33, sigma=2)
-      ep = TF.gaussian_blur(ep1, kernel_size=33, sigma=2) + highpass
+//       highpass = ep2 - TF.gaussian_blur(ep2, kernel_size=33, sigma=2)
+//       ep = TF.gaussian_blur(ep1, kernel_size=33, sigma=2) + highpass
 
-      step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
-      step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
-      x0 = (image - torch.sqrt(1 - alpha_cumprod) * ep) / torch.sqrt(alpha_cumprod)
-      x0 = x0.clamp(-1, 1)
-      v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
-      pred_prev_image = (step1 * x0) + (step2 * image) + v0
+//       step1 = (torch.sqrt(alpha_cumprod_prev) * beta) / (1 - alpha_cumprod)
+//       step2 = (torch.sqrt(alpha) * (1 - alpha_cumprod_prev)) / (1 - alpha_cumprod)
+//       x0 = (image - torch.sqrt(1 - alpha_cumprod) * ep) / torch.sqrt(alpha_cumprod)
+//       x0 = x0.clamp(-1, 1)
+//       v0 = add_variance(predicted_variance, t, torch.zeros_like(image))
+//       pred_prev_image = (step1 * x0) + (step2 * image) + v0
 
-      image = pred_prev_image
+//       image = pred_prev_image
 
-    clean = image.cpu().detach().numpy()
-  return clean`,
+//     clean = image.cpu().detach().numpy()
+//   return clean`,
                     gallery: [
                         { src: "/images/proj5/p91.png", caption: "a photo of a boat under the Golden Gate Bridge x an oil painting of a sunset from on top of the mountain" },
                         { src: "/images/proj5/p92.png", caption: "a photo of a dog licking ice cream x a pink water bottle" },
