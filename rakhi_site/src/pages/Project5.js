@@ -569,8 +569,8 @@ export default function Project5() {
 //     clean = image.cpu().detach().numpy()
 //   return clean`,
                     gallery: [
-                        { src: "/images/proj5/p91.png", caption: "a photo of a boat under the Golden Gate Bridge x an oil painting of a sunset from on top of the mountain" },
-                        { src: "/images/proj5/p92.png", caption: "a photo of a dog licking ice cream x a pink water bottle" },
+                        { src: "/images/proj5/hi3.png", caption: "a photo of a boat under the Golden Gate Bridge x an oil painting of a sunset from on top of the mountain" },
+                        { src: "/images/proj5/hi.png", caption: "a photo of a dog licking ice cream x a pink water bottle" },
                     ],
                 }
             ],
