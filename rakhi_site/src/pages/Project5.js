@@ -96,8 +96,6 @@ export default function Project5() {
                     paragraph:
                         "take a clean image and add noise to it",
                     paragraph1: "This function takes a clean image and a timestep t and returns the image after applying the forward diffusion noise for that step. It first samples random Gaussian noise with the same shape as the input image. Then, using the precomputed value α_cumprod[t], it scales the clean image by α_cumprod[t] and scales the noise by 1 − α_cumprod[t]. Finally, it adds these two components together to produce a noisy version of the image. The function simulates the forward noising process in diffusion models, gradually corrupting the image according to how much noise is prescribed at timestep t.",
-//                     code: `def forward(im, t):
-
 //   """
 //   Args:
 //     im : torch tensor of size (1, 3, 64, 64) representing the clean image
@@ -146,9 +144,6 @@ export default function Project5() {
                 {
                     title: "1.4 Iterative Denoising",
                     paragraph: "Diffusion models are designed to denoise iteratively. Below is the timestep schedule and the iterative denoising loop.",
-//                     code: `# Timestep schedule: start at 990 and stride by 30 down to 0
-// strided_timesteps = torch.arange(990, -1, -30)
-
 
 // def iterative_denoise(im_noisy, i_start, prompt_embeds, timesteps, display=True):
 //   image = im_noisy
@@ -218,8 +213,6 @@ export default function Project5() {
                     title: "1.6 Classifier-Free Guidance (CFG)",
                     paragraph: "improve image quality at the expense of image diversity",
                     paragraph1: "This code performs iterative DDPM denoising with classifier-free guidance. It uses two UNet predictions at each timestep: a conditional prediction based on the text prompt embedding (“a high quality photo”) and an unconditional prediction based on the empty prompt. As the loop moves backward through the diffusion timesteps, it first computes the diffusion coefficients (alpha_cumprod, alpha_cumprod_prev, alpha, beta). It then feeds the current noisy image into the UNet twice—once with the prompt and once without—to obtain a conditional noise estimate and an unconditional noise estimate. These two predictions are combined using the CFG formula: uncond_noise + scale * (cond_noise − uncond_noise), which amplifies alignment with the prompt. Using this guided noise estimate, the code reconstructs the predicted clean image x0, clamps it to a valid pixel range, adds the model’s predicted variance, and computes the next less noisy image using the DDPM update equation. This process continues until the image is fully denoised, producing a final clean image consistent with the user’s prompt.",
-//                     code: `def iterative_denoise_cfg(im_noisy, i_start, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
-
 //   image = im_noisy
 
 //   with torch.no_grad():
@@ -334,8 +327,6 @@ export default function Project5() {
                     title: "1.7.2 Inpainting",
                     paragraph: "given an image and a binary mask, we can create a new image that has the same content where m = 0 and new content where m = 1",
                     paragraph1: "This function performs diffusion-based inpainting using classifier-free guidance. It starts from random noise and iteratively denoises through the diffusion timesteps. At each step, it computes the diffusion coefficients (alpha_cumprod, alpha_cumprod_prev, alpha, beta), then runs the UNet twice, once with the prompt embedding and once with the unconditional embedding in order to get conditional and unconditional noise estimates. These are combined using the CFG formula to create a guided noise prediction aligned with the prompt. Using this guided noise, the function reconstructs the predicted clean image x0 and computes the next less noisy image via the DDPM update equation. After each step, the model blends the newly denoised image with the known parts of the original image using the mask. Inside the hole it uses the model’s output, and outside it restores the original image noised appropriately for the current timestep. This ensures that the diffusion process only synthesizes content in masked-out regions while keeping the rest intact. The process continues until the image is fully denoised, producing the final inpainted output.",
-//                     code: `def inpaint(original_image, mask, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
-
 //   image = torch.randn_like(original_image).to(device).half()
 
 //   with torch.no_grad():
@@ -431,10 +422,6 @@ export default function Project5() {
                     title: "1.8 Visual Anagrams",
                     paragraph: "create optical illusions with diffusion models. the two different prompts that i used to create the images are listed below.",
                     paragraph1: "This function generates a visual anagram by denoising an image with classifier-free guidance while simultaneously enforcing consistency between the image and its horizontally flipped counterpart. At each diffusion timestep, the code runs the UNet twice: once on the current image with the first prompt, and once on a flipped version of the image with the second prompt. For both passes, it also computes unconditional noise estimates and combines them with the conditional estimates using the CFG formula. The flipped-branch noise prediction is flipped back so both noise estimates are in the same orientation, and then the two guided predictions are averaged to enforce symmetry between the original and flipped prompts. This combined noise estimate is used to compute the predicted clean image x0 and to perform the DDPM update step, producing the next less noisy image. Repeating this process across timesteps yields an output that looks like one prompt when upright and like the other prompt when flipped, creating a visual anagram.",
-//                     code: `def visual_anagrams(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
-//   image = image.half().to('cuda')
-//   with torch.no_grad():
-//     for i in range(len(timesteps) - 1):
 //       # Get timesteps
 //       t = timesteps[i]
 //       prev_t = timesteps[i+1]
@@ -510,15 +497,7 @@ export default function Project5() {
                     title: "1.9 Hybrid Images",
                     paragraph: "we create a composite noise estimate, by estimating the noise with two different text prompts, and then combining low frequencies from one noise estimate with high frequencies of the other",
                     paragraph1: "This function generates a hybrid image by running two separate guided noise predictions, one conditioned on the first prompt and one on the second, and then combining them using frequency separation. At each timestep, it performs classifier-free guidance for both prompts, extracts their noise estimates, and then applies a Gaussian blur to produce a low-frequency version of the first noise map and a high-frequency version of the second. These filtered components are added together to form a blended noise estimate that mixes coarse structure from prompt 1 with fine details from prompt 2. Using this blended noise, the function computes the predicted clean image and applies a DDPM update to obtain the image for the next timestep. Iterating through all timesteps yields a single output image that fuses the low-frequency appearance of the first prompt with the high-frequency texture of the second.",
-//                     code: `def make_hybrids(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
-
-//   image = image.half().to('cuda')
-//   with torch.no_grad():
-//     for i in range(len(timesteps) - 1):
-//       # Get timesteps
-//       t = timesteps[i]
 //       prev_t = timesteps[i+1]
-
 //       alpha_cumprod = alphas_cumprod[t].to(image.device)
 //       alpha_cumprod_prev = alphas_cumprod[prev_t].to(image.device)
 //       alpha = alpha_cumprod / alpha_cumprod_prev
