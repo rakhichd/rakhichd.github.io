@@ -95,6 +95,7 @@ export default function Project5() {
                     title: "1.1 Implementing the Forward Process",
                     paragraph:
                         "take a clean image and add noise to it",
+                    paragraph1: "This function takes a clean image and a timestep t and returns the image after applying the forward diffusion noise for that step. It first samples random Gaussian noise with the same shape as the input image. Then, using the precomputed value α_cumprod[t], it scales the clean image by α_cumprod[t] and scales the noise by 1 − α_cumprod[t]. Finally, it adds these two components together to produce a noisy version of the image. The function simulates the forward noising process in diffusion models, gradually corrupting the image according to how much noise is prescribed at timestep t.",
 //                     code: `def forward(im, t):
 
 //   """
@@ -132,6 +133,7 @@ export default function Project5() {
                 {
                     title: "1.3 One-Step Denoising",
                     paragraph: "pretrained diffusion model to denoise",
+                    paragraph1: "For the three noisy images from part 1.2 (t = [250, 500, 750]), I used my forward function to add noise to the Campanile image, and then estimated the noise in each noisy image by passing it through stage_1.unet. AFter, I subtracted the predicted noise to get an estimate of the original clean image, and finally visualized the clean image, the noisy image, and the reconstructed estimate.",
                     gallery: [
                         { src: "/images/proj5/c250.png", caption: "Noisy Campanile,250 steps" },
                         { src: "/images/proj5/c500.png", caption: "Noisy Campanile, 500 steps" },
@@ -187,6 +189,7 @@ export default function Project5() {
 //     clean = image.cpu().detach().numpy()
 
 //   return clean`,
+                    paragraph1: "This code performs iterative denoising using a DDPM-style reverse diffusion loop. Starting from a noisy image at timestep t, it repeatedly steps backward through the diffusion schedule. For each step, it computes the current and previous cumulative alphas, derives alpha and beta, and uses the UNet (conditioned on a prompt embedding) to predict the noise in the current image. It then splits the model output into a noise estimate and a variance term, reconstructs the predicted clean image x0, and combines x0, the current noisy image, and the predicted variance to produce the image at the previous timestep. The loop progressively removes noise until a clean image estimate is obtained, optionally displaying intermediate results. Afterward, the code also computes a single-step denoised estimate using the DDPM x0 formula with a null prompt, and generates a Gaussian-blurred version of the noisy image for comparison.",
                     gallery: [
                         { src: "/images/proj5/noisy90.png", caption: "Noisy Campanile, 90" },
                         { src: "/images/proj5/noisy240.png", caption: "Noisy Campanile, 240" },
@@ -214,6 +217,7 @@ export default function Project5() {
                 {
                     title: "1.6 Classifier-Free Guidance (CFG)",
                     paragraph: "improve image quality at the expense of image diversity",
+                    paragraph1: "This code performs iterative DDPM denoising with classifier-free guidance. It uses two UNet predictions at each timestep: a conditional prediction based on the text prompt embedding (“a high quality photo”) and an unconditional prediction based on the empty prompt. As the loop moves backward through the diffusion timesteps, it first computes the diffusion coefficients (alpha_cumprod, alpha_cumprod_prev, alpha, beta). It then feeds the current noisy image into the UNet twice—once with the prompt and once without—to obtain a conditional noise estimate and an unconditional noise estimate. These two predictions are combined using the CFG formula: uncond_noise + scale * (cond_noise − uncond_noise), which amplifies alignment with the prompt. Using this guided noise estimate, the code reconstructs the predicted clean image x0, clamps it to a valid pixel range, adds the model’s predicted variance, and computes the next less noisy image using the DDPM update equation. This process continues until the image is fully denoised, producing a final clean image consistent with the user’s prompt.",
 //                     code: `def iterative_denoise_cfg(im_noisy, i_start, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
 
 //   image = im_noisy
@@ -329,6 +333,7 @@ export default function Project5() {
                 {
                     title: "1.7.2 Inpainting",
                     paragraph: "given an image and a binary mask, we can create a new image that has the same content where m = 0 and new content where m = 1",
+                    paragraph1: "This function performs diffusion-based inpainting using classifier-free guidance. It starts from random noise and iteratively denoises through the diffusion timesteps. At each step, it computes the diffusion coefficients (alpha_cumprod, alpha_cumprod_prev, alpha, beta), then runs the UNet twice, once with the prompt embedding and once with the unconditional embedding in order to get conditional and unconditional noise estimates. These are combined using the CFG formula to create a guided noise prediction aligned with the prompt. Using this guided noise, the function reconstructs the predicted clean image x0 and computes the next less noisy image via the DDPM update equation. After each step, the model blends the newly denoised image with the known parts of the original image using the mask. Inside the hole it uses the model’s output, and outside it restores the original image noised appropriately for the current timestep. This ensures that the diffusion process only synthesizes content in masked-out regions while keeping the rest intact. The process continues until the image is fully denoised, producing the final inpainted output.",
 //                     code: `def inpaint(original_image, mask, prompt_embeds, uncond_prompt_embeds, timesteps, scale=7, display=True):
 
 //   image = torch.randn_like(original_image).to(device).half()
@@ -425,6 +430,7 @@ export default function Project5() {
                 {
                     title: "1.8 Visual Anagrams",
                     paragraph: "create optical illusions with diffusion models. the two different prompts that i used to create the images are listed below.",
+                    paragraph1: "This function generates a visual anagram by denoising an image with classifier-free guidance while simultaneously enforcing consistency between the image and its horizontally flipped counterpart. At each diffusion timestep, the code runs the UNet twice: once on the current image with the first prompt, and once on a flipped version of the image with the second prompt. For both passes, it also computes unconditional noise estimates and combines them with the conditional estimates using the CFG formula. The flipped-branch noise prediction is flipped back so both noise estimates are in the same orientation, and then the two guided predictions are averaged to enforce symmetry between the original and flipped prompts. This combined noise estimate is used to compute the predicted clean image x0 and to perform the DDPM update step, producing the next less noisy image. Repeating this process across timesteps yields an output that looks like one prompt when upright and like the other prompt when flipped, creating a visual anagram.",
 //                     code: `def visual_anagrams(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
 //   image = image.half().to('cuda')
 //   with torch.no_grad():
@@ -503,6 +509,7 @@ export default function Project5() {
                 {
                     title: "1.9 Hybrid Images",
                     paragraph: "we create a composite noise estimate, by estimating the noise with two different text prompts, and then combining low frequencies from one noise estimate with high frequencies of the other",
+                    paragraph1: "This function generates a hybrid image by running two separate guided noise predictions, one conditioned on the first prompt and one on the second, and then combining them using frequency separation. At each timestep, it performs classifier-free guidance for both prompts, extracts their noise estimates, and then applies a Gaussian blur to produce a low-frequency version of the first noise map and a high-frequency version of the second. These filtered components are added together to form a blended noise estimate that mixes coarse structure from prompt 1 with fine details from prompt 2. Using this blended noise, the function computes the predicted clean image and applies a DDPM update to obtain the image for the next timestep. Iterating through all timesteps yields a single output image that fuses the low-frequency appearance of the first prompt with the high-frequency texture of the second.",
 //                     code: `def make_hybrids(image, prompt_embeds1, prompt_embeds2, uncond_prompt_embeds, timesteps, scale = 7):
 
 //   image = image.half().to('cuda')
@@ -569,7 +576,7 @@ export default function Project5() {
 //     clean = image.cpu().detach().numpy()
 //   return clean`,
                     gallery: [
-                        { src: "/images/proj5/hi3.png", caption: "a photo of a boat under the Golden Gate Bridge x an oil painting of a sunset from on top of the mountain" },
+                        { src: "/images/proj5/u1.png", caption: "a rocket ship x a pencil" },
                         { src: "/images/proj5/hi.png", caption: "a photo of a dog licking ice cream x a pink water bottle" },
                     ],
                 }
@@ -583,6 +590,7 @@ export default function Project5() {
                     title: "Part 1.1: Training a Single-Step Denoising UNet - Implementing the UNet",
                     paragraph:
                         "Given a noisy image , we aim to train a denoiser such that it maps to a clean image. This denoiser is a UNet.",
+                    paragraph1: "Implemented a UNet from scratch for 28x28 MNIST images using an encoder-bottleneck-decoder structure with skip connections, with atomic operations including Conv (Conv2d→BatchNorm2d→GELU), DownConv (stride=2 downsampling), UpConv (ConvTranspose2d upsampling), Flatten (AvgPool2d bottleneck), and Unflatten (ConvTranspose2d expansion), composed into ConvBlock, DownBlock, and UpBlock, with encoder path (ConvBlock→DownBlock→DownBlock), bottleneck (Flatten→Unflatten), decoder path with skip connections (UpBlock→UpBlock→ConvBlock), and final Conv2d output; used D=128 hidden channels and skip connections to preserve spatial details.",
                     gallery: [
                         { src: "/images/proj5/unet.png", caption: "Unconditional UNet", breakAfter: true },
                         { src: "/images/proj5/unet2.png", caption: "Standard UNet Operations", breakAfter: true },
@@ -602,7 +610,7 @@ export default function Project5() {
                 {
                     title: "Part 1.2.1 Training",
                     paragraph: "We now train the model to perform denoising.",
-                    paragraph1: "The following parameters were used for training: batch_size = 256, learning_rate = 1e-4,noise_level = 0.5, hidden_dim = 128, num_epochs = 5",
+                    paragraph1: "We train a UNet denoiser to recover clean images from noisy inputs by minimizing MSE between the network output and original images; training adds Gaussian noise (sigma=0.5) to MNIST images, performs a forward pass, computes MSE loss, updates weights with Adam, uses batch size 256, learning rate 1e-4, 5 epochs, hidden dimension 128 for the first layer, and saves checkpoints after each epoch.",
                     gallery: [
                         { src: "/images/proj5/plot_1.png", breakAfter: true },
                         { src: "/images/proj5/denoise1.png", breakAfter: true },
@@ -613,6 +621,7 @@ export default function Project5() {
                 {
                     title: "Part 1.2.2 Out-of-Distribution Testing",
                     paragraph: "The denoiser was trained on MNIST digits noised with sigma = 0.5. We want to observe how the denoiser performs on different sigmas that it wasn't trained for.",
+                    paragraph1: "The UNet denoiser trained on sigma=0.5 was evaluated for generalization to out-of-distribution noise levels sigma=[0.0,0.2,0.4,0.5,0.6,0.8,1.0] using checkpoints from Epochs 1 and 5; for each test image, noise was added to create a noisy input, the model produced a denoised output, and the original, noisy, and denoised images were displayed, showing best performance at the training noise level of sigma=0.5, slight blurring at sigma=0.0, good but slightly over-smoothed results at sigma=0.2-0.4, degraded performance at sigma=0.6-0.8, and poor recovery at sigma=1.0, with Epoch 5 generally improving denoising quality but the model remaining specialized for sigma=0.5 and showing limited out-of-distribution generalization.",
                     gallery: [
                         { src: "/images/proj5/p122_1.png" },
                         { src: "/images/proj5/p122_2.png" },
@@ -624,6 +633,7 @@ export default function Project5() {
                 {
                     title: "Part 1.2.3 Denoising Pure Noise",
                     paragraph: "We sample from the denoiser that was trained to denoise pure noise. The denoiser is able to generate MNIST digits from pure random Gaussian noise.",
+                    paragraph1: "The network takes pure Gaussian noise (epsilon ~ N(0, I)) of shape (1, 28, 28) as input and aims to output a random clean MNIST digit x, minimizing the Mean Squared Error (MSE) loss L = ||UNet(epsilon) - x||^2, using the same hyperparameters as the previous denoiser training with batch size 256, learning rate 1e-4, hidden dimension 128, and 5 epochs.",
                     gallery: [
                         { src: "/images/proj5/epoch_123_0.png" },
                         { src: "/images/proj5/epoch_123_1.png" },
@@ -640,6 +650,7 @@ export default function Project5() {
                 {
                     title: "Part 2: Training a Flow Matching Model",
                     paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching.",
+                    paragraph1: "Flow Matching generates images by learning an iterative transformation from noise to data, defining a smooth path x_t = (1-t)*x_0 + t*x_1 from Gaussian noise x_0 ~ N(0,I) to clean data x_1, with constant velocity v_t = x_1 - x_0, training a neural network to predict v_t from x_t and t, so that new images can be generated by starting from noise and following the learned flow forward in time.",
                     gallery: [
                         
                     ],
@@ -647,6 +658,7 @@ export default function Project5() {
                 {
                     title: "2.1 Adding Time Conditioning to UNet",
                     paragraph: "We add time conditioning to the UNet by concatenating the time embedding to the input of the UNet.",
+                    paragraph1: "To condition the UNet on time, scalars representing timesteps are transformed into feature modulation vectors via FCBlocks (Linear → GELU → Linear), and the TimeConditionalUNet applies these vectors multiplicatively after the bottleneck (fc1: 1→2D) and after the first upsampling (fc2: 1→2D), allowing the network to adapt its behavior to different timesteps, with early timesteps dominated by noise and later timesteps by signal.",
                     gallery: [
                         { src: "/images/proj5/f1.png", breakAfter: true },
                         { src: "/images/proj5/f2.png" },
@@ -654,7 +666,7 @@ export default function Project5() {
                 },
                 {
                     title: "2.2 Training the UNET",
-                    paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching. We used the following algorthim in order to train the time-conditioned UNet:",
+                    paragraph: "One-step denoising does not work well for generative tasks, instead we need to iteratively denoise the image, and here we do that via flow matching. I used the following hyperparameters: batch_size=64, learning_rate=1e-2 with decay, hidden_dim=64, epochs=10, and ExponentialLR scheduler. We used the following algorthim in order to train the time-conditioned UNet:",
                     gallery: [
                         { src: "/images/proj5/f3.png", breakAfter: true },
                         { src: "/images/proj5/p2_12_curve.png", caption: "Training Curve for the time-conditioned UNet over the whole training process" },
@@ -663,6 +675,7 @@ export default function Project5() {
                 {
                     title: "2.3 Sampling from the UNet",
                     paragraph: "We sample from the UNet that was trained to denoise pure noise. We use the following algorthim to sample from the UNet:",
+                    paragraph1: "Initialize x_0 as pure noise, set step size delta_t, then for each step compute the current time t, predict the flow v_t, perform an Euler step x_{t+delta} = x_t + delta_t * v_t, and return the final state x_1 as the generated image.",
                     gallery: [
                         { src: "/images/proj5/f4.png", breakAfter: true },
                         { src: "/images/proj5/epoch0_23.png" },
@@ -676,7 +689,7 @@ export default function Project5() {
                 },
                 {
                     title: "2.5 Training the UNet",
-                    paragraph: "Now I perform training again similar to the time-only training, with the exception of using the conditioning vector and doing unconditional generation periodically. The following algorithm was used to do this:",
+                    paragraph: "Now I perform training again similar to the time-only training, with the exception of using the conditioning vector and doing unconditional generation periodically. Class-conditional Flow Matching extends Flow Matching to include class labels for controlled generation by sampling a batch of images x_1 and labels c, time t ~ Uniform(0,1), noise x_0 ~ N(0,I), computing x_t = (1-t)x_0 + t x_1, sampling a Bernoulli dropout mask m (keeping class 90% of the time), predicting flow v_pred = UNet(x_t, c, t, m), computing loss L = ||v_pred - (x_1 - x_0)||^2, and training with batch_size=64, learning_rate=1e-4 with ExponentialLR(gamma=0.1^(1/10)), hidden_dim=64, N=50, p_uncond=0.1, and 10 epochs.The following algorithm was used to do this:",
                     gallery: [
                         { src: "/images/proj5/f5.png", breakAfter: true },
                         { src: "/images/proj5/p25_plot.png" },
@@ -685,7 +698,8 @@ export default function Project5() {
                 {
                     title: "2.6 Sampling from the UNet",
                     paragraph: "Now we will sample with class-conditioning and will use classifier-free guidance with a scale of 5.0 using the following algorithm:",
-                    paragraph1: "We also used a scheduler throughout to sample from the UNet. In the last three images that were generated for the digits, I removed the scheduler to see how the images would look without it. To compensate for the loss of the scheduler, I increased the learning rate from 1e-4 to 1e-2 and keeping the other parameters the same as before.",
+                    paragraph1: "Classifier-Free Guidance (CFG) enhances sample quality and class fidelity by amplifying the difference between conditional and unconditional model predictions.",
+                    paragraph2: "We also used a scheduler throughout to sample from the UNet. In the last three images that were generated for the digits, I removed the scheduler to see how the images would look without it. To compensate for the loss of the scheduler, I increased the learning rate from 1e-4 to 1e-2 and keeping the other parameters the same as before. I observed that the sample quality was nearly the same, when looking at digits generated at epochs 1, 5, and 10. The images looked identical despite using these two different learning rates. This happens because diffusion and flow matching models seem to be indifferent to the learning rate choices. The UNet with skip connections is stable, the MSE flow loss is well-behaved, iterative sampling corrects small errors over many steps, and sufficient training ensures the model converges to similar results.",
                     gallery: [
                         {src: "/images/proj5/f6.png", breakAfter: true },
                         { src: "/images/proj5/p26_1.png"},
